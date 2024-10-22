@@ -1,3 +1,9 @@
+import random as rd
+from django.conf import settings
+from .models import *
+
+
+
 """
 сортировка по значению sort_by=<field_name> reverse=<True/False>
 фильтрация по цветам colors=<c1>+<c2>
@@ -10,54 +16,40 @@
 НУЖНО ПОКРЫТЬ ВСЕ ЭТО ТЕСТАМИ
 """
 
-ACCEPTABLE_SORT_FIELDS = ['price', 'name', '-price', '-name']
-
-REVERSE_TRUE_VALUE = 'True'
-REVERSE_FALSE_VALUE = 'False'
-
-SORT_BY_KEY = 'sort_by'
-REVERSE_KEY = 'reverse'
-PRICE_START_KEY = 'price_start'
-PRICE_END_KEY = 'price_end'
-COLORS_KEY = 'colors'
-SIZES_KEY = 'sizes'
-BRANDS_KEY = 'brands'
-TYPES_KEY = 'types'
-
 
 def preprocess_queryset(queryset, params: dict):
-    if  SORT_BY_KEY in params.keys():
-        sort_by = params[SORT_BY_KEY]
+    if settings.SORT_BY_KEY in params.keys():
+        sort_by = params[settings.SORT_BY_KEY]
     else:
         sort_by = None
-    if  REVERSE_KEY in params.keys():
-        reverse = params[REVERSE_KEY]
+    if settings.REVERSE_KEY in params.keys():
+        reverse = params[settings.REVERSE_KEY]
     else:
         reverse = None
 
-    if PRICE_START_KEY in params.keys():
-        price_start = int(params[PRICE_START_KEY])
+    if settings.PRICE_START_KEY in params.keys():
+        price_start = int(params[settings.PRICE_START_KEY])
     else:
         price_start = None
-    if PRICE_END_KEY in params.keys():
-        price_end = int(params[PRICE_END_KEY])
+    if settings.PRICE_END_KEY in params.keys():
+        price_end = int(params[settings.PRICE_END_KEY])
     else:
         price_end = None
 
-    if COLORS_KEY in params.keys():
-        colors = [int(i) for i in params[COLORS_KEY].split()]
+    if settings.COLORS_KEY in params.keys():
+        colors = [int(i) for i in params[settings.COLORS_KEY].split()]
     else:
         colors = None
-    if SIZES_KEY in params.keys():
-        sizes = [int(i) for i in params[SIZES_KEY].split()]
+    if settings.SIZES_KEY in params.keys():
+        sizes = [int(i) for i in params[settings.SIZES_KEY].split()]
     else:
         sizes = None
-    if BRANDS_KEY in params.keys():
-        brands = [int(i) for i in params[BRANDS_KEY].split()]
+    if settings.BRANDS_KEY in params.keys():
+        brands = [int(i) for i in params[settings.BRANDS_KEY].split()]
     else:
         brands = None
-    if TYPES_KEY in params.keys():
-        types = [int(i) for i in params[TYPES_KEY].split()]
+    if settings.TYPES_KEY in params.keys():
+        types = [int(i) for i in params[settings.TYPES_KEY].split()]
     else:
         types = None
 
@@ -68,10 +60,10 @@ def preprocess_queryset(queryset, params: dict):
                                brands, types)
     return queryset
 
-def sort_queryset(queryset, field_name, reverse=REVERSE_FALSE_VALUE):
-    if reverse == REVERSE_TRUE_VALUE:
+def sort_queryset(queryset, field_name, reverse=settings.REVERSE_FALSE_VALUE):
+    if reverse == settings.REVERSE_TRUE_VALUE:
         field_name = f'-{field_name}'
-    if field_name in ACCEPTABLE_SORT_FIELDS:
+    if field_name in settings.ACCEPTABLE_SORT_FIELDS:
         queryset = queryset.order_by(field_name)
     return queryset
 
@@ -99,6 +91,40 @@ def filter_queryset(queryset,
     if types:
         queryset = queryset.filter(type__in=types)
 
+    return queryset
+
+
+
+def generate_simple_models(model, names):
+    queryset = []
+    for name in names:
+        element = model.objects.create(name=name)
+        element.save()
+        queryset.append(element)
+    return queryset
+
+
+def generate_random_products(num_models, colors, sizes, brands, types):
+    queryset = []
+    for i in range(num_models):
+        kwargs = {
+            'name': f'name{i}',
+            'des':  f'des{i}',
+            'type': rd.choice(types),
+            'size': rd.choice(sizes),
+            'price': rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END),
+            'qty': rd.randint(settings.DEFAULT_QTY_START, settings.DEFAULT_QTY_END),
+        }
+        product = Product.objects.create(**kwargs)
+        product.colors.set(
+            rd.sample(colors, rd.randint(1, len(colors)))
+        )
+        product.brands.set(
+            rd.sample(brands, rd.randint(1, len(brands)))
+        )
+       
+        product.save()
+        queryset.append(product)
     return queryset
 
     

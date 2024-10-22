@@ -85,3 +85,28 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DEFAULT_COLORS = ['red', 'blue', 'green', 'yellow', 'pink', 'black', 'white']
+DEFAULT_SIZES = ['XXL', 'XL', 'L', 'M', 'S', 'XS']
+DEFAULT_BRANDS = ['Nike', 'Amiri', 'Balenciaga', 'Adidas', 'Rick Owens', 'Bape']
+DEFAULT_TYPES = ['Hoodie', 'T-shirt', 'Jeans', 'Jacket', 'Pants']
+DEFAULT_PRICE_START = 1000
+DEFAULT_PRICE_END = 100_000
+DEFAULT_QTY_START = 1
+DEFAULT_QTY_END = 1000
+
+
+ACCEPTABLE_SORT_FIELDS = ['price', 'name', '-price', '-name']
+
+REVERSE_TRUE_VALUE = 'True'
+REVERSE_FALSE_VALUE = 'False'
+
+SORT_BY_KEY = 'sort_by'
+REVERSE_KEY = 'reverse'
+PRICE_START_KEY = 'price_start'
+PRICE_END_KEY = 'price_end'
+COLORS_KEY = 'colors'
+SIZES_KEY = 'sizes'
+BRANDS_KEY = 'brands'
+TYPES_KEY = 'types'

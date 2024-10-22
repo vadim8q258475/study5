@@ -3,6 +3,8 @@ from rest_framework.test import APITestCase
 from rest_framework.status import HTTP_200_OK
 from .models import *
 from .serializers import *
+from .utils import generate_random_products, generate_simple_models
+from django.conf import settings
 import random as rd
 
 """
@@ -16,61 +18,16 @@ import random as rd
 НУЖНО ПОКРЫТЬ ВСЕ ЭТО ТЕСТАМИ
 """
 
-COLORS = ['red', 'blue', 'green', 'yellow', 'pink', 'black', 'white']
-SIZES = ['XXL', 'XL', 'L', 'M', 'S', 'XS']
-BRANDS = ['Nike', 'Amiri', 'Balenciaga', 'Adidas', 'Rick Owens', 'Bape']
-TYPES = ['Hoodie', 'T-shirt', 'Jeans', 'Jacket', 'Pants']
-PRICE_START = 1000
-PRICE_END = 100_000
-QTY_START = 1
-QTY_END = 1000
-
-
-def generate_simple_models(model, names):
-    queryset = []
-    for name in names:
-        element = model.objects.create(name=name)
-        element.save()
-        queryset.append(element)
-    return queryset
-
-
-def generate_random_products(num_models, colors, sizes, brands, types):
-    queryset = []
-    for i in range(num_models):
-        kwargs = {
-            'name': f'name{i}',
-            'des':  f'des{i}',
-            # 'colors': rd.sample(colors, rd.randint(1, len(colors))),
-            'type': rd.choice(types),
-            'size': rd.choice(sizes),
-            # 'brands': rd.sample(brands, rd.randint(1, len(brands))),
-            'price': rd.randint(PRICE_START, PRICE_END),
-            'qty': rd.randint(QTY_START, QTY_END),
-        }
-        product = Product.objects.create(**kwargs)
-        product.colors.set(
-            rd.sample(colors, rd.randint(1, len(colors)))
-        )
-        product.brands.set(
-            rd.sample(brands, rd.randint(1, len(brands)))
-        )
-       
-        product.save()
-        queryset.append(product)
-    return queryset
-
-
 
 
 class ProductsAPIView(APITestCase):
 
     base_url = 'http://127.0.0.1:8000/products'
     base_query_url = 'http://127.0.0.1:8000/products?sort_by={}&colors={}&sizes={}&types={}&brands={}&price_start={}&price_end={}'
-    colors = generate_simple_models(Color, COLORS)
-    sizes = generate_simple_models(Size, SIZES)
-    brands = generate_simple_models(Brand, BRANDS)
-    types = generate_simple_models(Type,TYPES)
+    colors = generate_simple_models(Color, settings.DEFAULT_COLORS)
+    sizes = generate_simple_models(Size, settings.DEFAULT_SIZES)
+    brands = generate_simple_models(Brand, settings.DEFAULT_BRANDS)
+    types = generate_simple_models(Type, settings.DEFAULT_TYPES)
 
     def setUp(self):
         generate_random_products(20, self.colors, self.sizes, self.brands, self.types)
@@ -101,8 +58,8 @@ class ProductsAPIView(APITestCase):
                 rd.randint(1, len(self.types))
                 )
             )
-        price_start_sample = rd.randint(PRICE_START, PRICE_END)
-        price_end_sample = str(rd.randint(price_start_sample, PRICE_END))
+        price_start_sample = rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END)
+        price_end_sample = str(rd.randint(price_start_sample, settings.DEFAULT_PRICE_END))
         price_start_sample = str(price_start_sample)
 
         url1 = self.base_query_url.format('price', 
