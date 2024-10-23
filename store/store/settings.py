@@ -16,7 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'main'
+    'rest_framework.authtoken',
+    'djoser',
+    'main',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -30,6 +33,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'store.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 TEMPLATES = [
     {
