@@ -24,12 +24,12 @@ class ProductsAPIView(APITestCase):
 
     base_url = 'http://127.0.0.1:8000/products'
     base_query_url = 'http://127.0.0.1:8000/products?sort_by={}&colors={}&sizes={}&types={}&brands={}&price_start={}&price_end={}'
-    colors = generate_simple_models(Color, settings.DEFAULT_COLORS)
-    sizes = generate_simple_models(Size, settings.DEFAULT_SIZES)
-    brands = generate_simple_models(Brand, settings.DEFAULT_BRANDS)
-    types = generate_simple_models(Type, settings.DEFAULT_TYPES)
 
     def setUp(self):
+        self.colors = generate_simple_models(Color, settings.DEFAULT_COLORS)
+        self.sizes = generate_simple_models(Size, settings.DEFAULT_SIZES)
+        self.brands = generate_simple_models(Brand, settings.DEFAULT_BRANDS)
+        self.types = generate_simple_models(Type, settings.DEFAULT_TYPES)
         generate_random_products(20, self.colors, self.sizes, self.brands, self.types)
         return super().setUp()
 
