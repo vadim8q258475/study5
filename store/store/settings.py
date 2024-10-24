@@ -1,4 +1,6 @@
 from pathlib import Path
+# from django.contrib.auth import get_user_model
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +43,13 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+# User = get_user_model()
+
+# DJOSER = {
+#     'SEND_ACTIVATION_EMAIL': True,
+#     'LOGIN_FIELD': User.EMAIL_FIELD,
+# }
 
 TEMPLATES = [
     {
