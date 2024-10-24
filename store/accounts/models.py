@@ -34,9 +34,34 @@ class DeliveryType(models.Model):
         verbose_name_plural = 'Типы доставки'
 
 
+class CartProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    qty = models.IntegerField(verbose_name='Количество')
+
+    def __str__(self):
+        return f'Продукт корзины {self.product.name}'
+    
+    class Meta:
+        verbose_name = 'Продукт корзины'
+        verbose_name_plural = 'Продукты корзины'
+    
+
+class OrderProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    qty = models.IntegerField(verbose_name='Количество')
+
+    def __str__(self):
+        return f'Продукт заказа {self.product.name}'
+    
+    class Meta:
+        verbose_name = 'Продукт заказа'
+        verbose_name_plural = 'Продукты заказа'
+
+
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    products = models.ManyToManyField(Product, verbose_name='Товары')
+    products = models.ManyToManyField(CartProduct, verbose_name='Товары')
     total = models.DecimalField(max_digits=10, decimal_places=2, 
                                 default=0, verbose_name='Цена')
     
@@ -51,7 +76,7 @@ class Cart(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     address = models.TextField(verbose_name='Адрес доставки')
-    products = models.ManyToManyField(Product, verbose_name='Товары')
+    products = models.ManyToManyField(OrderProduct, verbose_name='Товары')
     delivery_type = models.ForeignKey(DeliveryType, on_delete=models.PROTECT, verbose_name='Тип доставки')
     status = models.ForeignKey(OrderStatus, on_delete=models.PROTECT, verbose_name='Статус')
     total = models.DecimalField(max_digits=10, decimal_places=2, 
