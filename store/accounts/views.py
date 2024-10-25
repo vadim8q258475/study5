@@ -47,8 +47,6 @@ class CartAPIView(APIView):
         return Response('Товар успешно добавлен в корзину')
 
 
-
-
 class WishListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -81,14 +79,40 @@ class OrdersAPIView(APIView):
         return Response(serializer.data)
     
     def post(self, request):
-        pass
+        user = request.user
+        address = request.data['address']
+        cart_products = Cart.objects.get(user=user).products.all()
+        delivery_type_id = int(request.data['delivery_type_id'])
+        status_id = int(request.data['status_id'])
+
+        delivery_type = DeliveryType.objects.get(id=delivery_type_id)
+        status = OrderStatus.objects.get(id=status_id)
+
+        order = Order.objects.create(
+            user=user,
+            address=address,
+            delivery_type=delivery_type,
+            status=status
+            )
+
+        for cart_product in cart_products:
+            order_product = OrderProduct(
+                product=cart_product.product,
+                qty=cart_product.qty
+                )
+            order_product.save()
+            cart_product.delete()
+            order.products.add(order_product)
+        
+        order.save()
+        return Response('Заказ успешно создан')
+
 
 
 class OrderAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, order_id):
-        user = request.user
         order = Order.objects.get(id=order_id)
         serializer = OrderSerilizer(order)
         return Response(serializer.data)
