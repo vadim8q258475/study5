@@ -20,7 +20,7 @@ import random as rd
 
 
 
-class ProductsAPIView(APITestCase):
+class ProductsAPIViewTestCase(APITestCase):
 
     base_url = 'http://127.0.0.1:8000/products'
     base_query_url = 'http://127.0.0.1:8000/products?sort_by={}&colors={}&sizes={}&types={}&brands={}&price_start={}&price_end={}'
