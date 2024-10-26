@@ -83,7 +83,7 @@ class Order(models.Model):
                                 default=0, verbose_name='Цена')
 
     def __str__(self):
-        return f'Заказ {self.id} пользователя {self.user.name}'
+        return f'Заказ {self.id} пользователя {self.user.username}'
     
     class Meta:
         verbose_name = 'Заказ'

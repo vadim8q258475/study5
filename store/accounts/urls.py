@@ -3,10 +3,10 @@ from .views import *
 
 """
     http://127.0.0.1:8000/accounts/api/v1/auth/users/ post
-    http://127.0.0.1:8000/accounts/auth/token/login/ post
+    http://127.0.0.1:8000/accounts/auth/token/login/ post 
 
     in headers:
-        Authorization: Token <token>
+        Authorization: Token <token> 048f016a3a1e9c783c23cc190e0eb9d2d391e929
 
     /cart update 
           в body передается id продукта и количество

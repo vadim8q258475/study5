@@ -8,6 +8,7 @@ from .serializers import *
 """
     Дописать функционал создания заказа
     Покрыть все тестами
+    Добавить перещет корзины
 """
 
 
@@ -25,14 +26,14 @@ class CartAPIView(APIView):
         serializer = CartSerilizer(cart)
         return Response(serializer.data)
     
-    def update(self, request):
+    def patch(self, request):
         id = int(request.data['product_id'])
         qty = int(request.data['product_qty'])
         product = Product.objects.filter(id=id)
 
         if product.exists():
             product = product[0]
-            if qty > 0:
+            if qty <= 0:
                 return Response('Количество товара должно быть больше нуля')
             elif product.qty < qty:
                 return Response('Недостаточно товара в наличии, выберите меньшее значение')
@@ -45,6 +46,18 @@ class CartAPIView(APIView):
         cart = Cart.objects.get(user=user)
         cart.products.add(product)
         return Response('Товар успешно добавлен в корзину')
+    
+    def delete(self, request):
+        id = int(request.data['cart_product_id'])
+        cart = Cart.objects.get(user=request.user)
+        cart_product = cart.products.filter(id=id)
+
+        if cart_product.exists():
+            cart_product = cart_product[0]
+            cart_product.delete()
+            return Response("Товар успешно удален из корзины пользователя")
+        
+        return Response("В корзине пользователя не существует продукта с таким id")
 
 
 class WishListAPIView(APIView):
@@ -56,17 +69,32 @@ class WishListAPIView(APIView):
         serializer = WishListSerilizer(wish_list)
         return Response(serializer.data)
     
-    def update(self, request):
+    def patch(self, request):
         id = int(request.data['product_id'])
         product = Product.objects.filter(id=id)
         
         if not product.exists():
             return Response('Товара с таким id не существует')
+        product = product[0]
         
         user = request.user
         cart = WishList.objects.get(user=user)
         cart.products.add(product)
         return Response('Товар успешно добавлен в список желаемого')
+    
+    def delete(self, request):
+        id = int(request.data['product_id'])
+        wish_list = WishList.objects.get(user=request.user)
+        product = wish_list.products.filter(id=id)
+
+        if not product.exists():
+            return Response('Товара с таким id не существует в списке желаемого пользователя')
+        product = product[0]
+
+        wish_list.products.remove(product)
+
+        return Response("Товар успешно удален из списка желаемого пользователя")
+
 
 
 class OrdersAPIView(APIView):
@@ -106,7 +134,6 @@ class OrdersAPIView(APIView):
         
         order.save()
         return Response('Заказ успешно создан')
-
 
 
 class OrderAPIView(APIView):
