@@ -8,13 +8,18 @@ from .views import *
     in headers:
         Authorization: Token <token> 048f016a3a1e9c783c23cc190e0eb9d2d391e929
 
-    /cart update 
+    /cart patch
           в body передается id продукта и количество
-          get возвращает корзину пользователя
+          get 
+          возвращает корзину пользователя
+          delete
+          в body передается id продукта
 
     /wish_list update
                в body передается id продукта
                get возвращает список желаемого пользователя
+               delete
+               в body передается id продукта
 
      /orders get возвращает заказы юзера
              post создает заказ 

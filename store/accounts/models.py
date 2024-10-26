@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from main.models import Product
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 
 
 User = get_user_model()
