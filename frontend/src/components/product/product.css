@@ -18,24 +18,12 @@
     height: 100%;
 }
 .productInfo{
-    display: grid;
-    grid-template: 1fr / repeat(3, 1fr);
+    display: flex;
+    justify-content: space-between;
     font-size: 20px;
 }
-.productName{
+.productText{
     padding: 3px;
-}
-.productBrand{
-    padding: 3px;
-}
-.productType{
-    padding: 3px;
-}
-.productPrice{
-    padding: 3px;
-    
-}
-.align-center{
     display: flex;
     align-items: center;
 }

@@ -2,17 +2,15 @@ import "./product.css"
 import tShirt from './t-shirt.jpeg';
 
 
-function Product() {
+function Product(props) {
     return (
-      <div className="product">
-        <div class="imgWrapper">
-        <img class="productImg" src={tShirt}></img>
+      <div className="product" key={props.key}>
+        <div className="imgWrapper">
+        <img className="productImg" src={tShirt}></img>
                 </div>
-                <div class="productInfo">
-                    <div class="productName align-center">Name</div>
-                    <div class="productBrand align-center">Brand</div>
-                    <div class="productType align-center">Jeans</div>
-                    <div class="productPrice align-center">399 $</div>
+                <div className="productInfo">
+                    <div className="productText">{props.name}</div>
+                    <div className="productText">{props.price} $</div>
                 </div>
       </div>
     );
