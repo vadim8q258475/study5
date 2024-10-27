@@ -153,4 +153,13 @@ class ProfileAPIView(APIView):
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerilizer(profile)
         return Response(serializer.data)
+    
+
+class DeliveryTypeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        delivery_types = DeliveryType.objects.all()
+        serializer = DeliveryTypeSerilizer(delivery_types, many=True)
+        return Response(serializer.data)
 
