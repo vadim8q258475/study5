@@ -1,0 +1,9 @@
+.products{
+    padding-left: 150px;
+    padding-right: 150px;
+}
+.productsContainer{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+}
