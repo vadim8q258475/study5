@@ -1,8 +1,9 @@
 .order{
     padding: 10px;
-    background-color: rgb(204, 245, 245);
+    background-color: rgb(255, 255, 255);
     border-radius: 10px;
     margin-bottom: 40px;
+    border: 2px solid black;
 }
 .orderTitle{
     font-size: 30px;

@@ -29,6 +29,7 @@ from .views import *
 
 urlpatterns = [
     path('', TestAccountsAPIView.as_view()),
+    path('delivery_types', DeliveryTypesAPIView.as_view()),
     path('cart', CartAPIView.as_view()),
     path('wish_list', WishListAPIView.as_view()),
     path('orders', OrdersAPIView.as_view()),

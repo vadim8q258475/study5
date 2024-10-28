@@ -3,6 +3,8 @@ import "./orders.css";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import get_data from "../../utils.js"
+import EmptyPage from "../empty_page/empty_page.js";
 
 const area = "orders";
 const apiUrl = "http://127.0.0.1:8000/accounts/orders";
@@ -13,21 +15,11 @@ function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const instance = axios.create({
-      baseURL: apiUrl,
-      headers: { Authorization: `Token ${token}` },
-    });
-    trackPromise(
-      instance.get().then((resp) => {
-        const orders = resp.data;
-        setOrders(orders);
-        console.log(resp.data);
-      })
-    );
+    get_data(trackPromise, apiUrl, token, setOrders)
   }, [setOrders]);
 
   if (orders.length == 0) {
-    return <h1>No orders</h1>;
+    return <EmptyPage text='No orders'/>
   } else if (promiseInProgress) {
     return <h1>Loading...</h1>;
   } else {
