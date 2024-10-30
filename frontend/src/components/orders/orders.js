@@ -8,7 +8,7 @@ import EmptyPage from "../empty_page/empty_page.js";
 
 const area = "orders";
 const apiUrl = "http://127.0.0.1:8000/accounts/orders";
-const token = "048f016a3a1e9c783c23cc190e0eb9d2d391e929";
+const token = localStorage.getItem("token")
 
 function Orders() {
   const { promiseInProgress } = usePromiseTracker({ area });
