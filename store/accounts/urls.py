@@ -1,6 +1,7 @@
 from django.urls import path, include, re_path
 from .views import *
 
+
 """
     http://127.0.0.1:8000/accounts/api/v1/auth/users/ post
     http://127.0.0.1:8000/accounts/auth/token/login/ post 

@@ -5,13 +5,16 @@ from rest_framework.generics import ListAPIView
 from .serializers import *
 from .models import *
 from .utils import *
+from rest_framework.permissions import IsAuthenticated
 
 class TestAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         return Response("Hello World!")
 
 
 class ProductAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, product_id):
         product = Product.objects.get(id=int(product_id))
         serializer = ProductSerializer(product)
@@ -19,6 +22,7 @@ class ProductAPIView(APIView):
 
 
 class ProductsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         params = request.GET.dict()
         products = preprocess_queryset(
@@ -28,18 +32,22 @@ class ProductsAPIView(APIView):
     
 
 class ColorsAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Color.objects.all()
     serializer_class = ColorSerializer
 
 class SizesAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Size.objects.all()
     serializer_class = SizeSerializer
 
 class BrandsAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
 class TypesAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
 
@@ -47,6 +55,7 @@ class TypesAPIView(ListAPIView):
 
 
 class GenDelProductsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         params = request.GET.dict()
         num = int(params['num'])
