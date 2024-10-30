@@ -155,7 +155,7 @@ class ProfileAPIView(APIView):
         return Response(serializer.data)
     
 
-class DeliveryTypeAPIView(APIView):
+class DeliveryTypesAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

@@ -1,0 +1,9 @@
+.wishList{
+    padding-left: 150px;
+    padding-right: 150px;
+}
+
+.wishContainer{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
