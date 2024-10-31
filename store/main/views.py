@@ -11,6 +11,13 @@ class TestAPIView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         return Response("Hello World!")
+    
+    
+class ProductIdsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        product_ids = [i.id for i in Product.objects.all()]
+        return Response(product_ids)
 
 
 class ProductAPIView(APIView):

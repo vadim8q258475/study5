@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import get_data from "../../utils.js";
 import EmptyPage from "../empty_page/empty_page.js";
+import { Link } from "react-router-dom";
 
 const baseApiUrl = "http://127.0.0.1:8000";
 const token = localStorage.getItem("token")
@@ -140,11 +141,11 @@ function Products() {
           <div className="productsContainerWrapper">
             <div className="productsContainer">
               {products.map((prod) => (
-                <Product
+                <Link to={`products/${prod.id}`}><Product
                   name={prod.name}
                   price={prod.price}
                   key={prod.id}
-                ></Product>
+                ></Product></Link>
               ))}
             </div>
           </div>

@@ -1,0 +1,52 @@
+.productDetail{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+  .productDetailGallery{
+    padding-right: 40px;
+    height: fit-content;
+  }
+  .productDetailInfo{
+    padding-left: 40px;
+  }
+  .productDetailInfoText{
+    font-size: 20px;
+  }
+  
+  .productDetailInfoHead{
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+  .productDetailInfoTitle{
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .productDetailBtnGroup{
+    margin-top: 40px;
+  }
+  .productDetailBtn{
+    width: 250px;
+    height: 50px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .productDetailImg{
+    width: 100%;
+    height: 100%;
+  }
+  .productsDetailValuesList{
+    
+  }
+  .radioInput{
+    display: inline-block;
+  }
+  .productsDetailValuesListEl{
+    width: fit-content;
+    justify-content: center;
+    margin-bottom: 5px;
+    display: inline-block;
+  }

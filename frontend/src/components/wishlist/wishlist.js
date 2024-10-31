@@ -9,7 +9,7 @@ import WishListProduct from "./wish_list_product.js";
 
 const area = "products";
 const apiUrl = "http://127.0.0.1:8000/accounts/wish_list";
-const token = "048f016a3a1e9c783c23cc190e0eb9d2d391e929";
+const token = localStorage.getItem('token')
 
 function WishList() {
   const { promiseInProgress } = usePromiseTracker({ area });
@@ -17,6 +17,7 @@ function WishList() {
 
   useEffect(() => {
     get_data(trackPromise, apiUrl, token, setWishList);
+    console.log('wish', wishList)
   }, [setWishList]);
 
   if (!wishList || wishList.products.length == 0) {

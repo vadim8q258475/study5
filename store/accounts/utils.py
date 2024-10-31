@@ -1,5 +1,5 @@
 
-def recalc_cart(cart):
+def recalc(cart):
     cart_products = cart.products.all()
     total = 0
     for cart_product in cart_products:

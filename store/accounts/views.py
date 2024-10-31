@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from .serializers import *
+from .utils import *
 
 """
     Дописать функционал создания заказа
@@ -34,7 +35,7 @@ class CartAPIView(APIView):
 
         if product.exists():
             product = product[0]
-            size = product.sizes.objects.filter(id=id)
+            size = product.sizes.filter(id=size_id)
             
             if size.exists():
                 size = size[0]
@@ -52,6 +53,7 @@ class CartAPIView(APIView):
         user = request.user
         cart = Cart.objects.get(user=user)
         cart.products.add(product)
+        recalc(cart)
         return Response('Товар успешно добавлен в корзину')
     
     def delete(self, request):
@@ -115,8 +117,9 @@ class OrdersAPIView(APIView):
     
     def post(self, request):
         user = request.user
-        address = request.data['address']
         cart_products = Cart.objects.get(user=user).products.all()
+        
+        address = request.data['address']
         delivery_type_id = int(request.data['delivery_type_id'])
         status_id = int(request.data['status_id'])
 

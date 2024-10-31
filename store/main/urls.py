@@ -9,5 +9,6 @@ urlpatterns = [
     path('brands', BrandsAPIView.as_view()),
     path('types', TypesAPIView.as_view()),
     path('sizes', SizesAPIView.as_view()),
-    path('gen_default', GenDelDefaultModelsAPIView.as_view())
+    path('gen_default', GenDelDefaultModelsAPIView.as_view()),
+    path('product_ids', ProductIdsAPIView.as_view())
 ]
