@@ -37,6 +37,7 @@ class DeliveryType(models.Model):
 class CartProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
+    size_name = models.CharField(max_length=100, verbose_name="Название размера", default='size_name')
 
     def __str__(self):
         return f'Продукт корзины {self.product.name}'
@@ -49,6 +50,7 @@ class CartProduct(models.Model):
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
+    size_name = models.CharField(max_length=100, verbose_name="Название размера", default='size_name')
 
     def __str__(self):
         return f'Продукт заказа {self.product.name}'

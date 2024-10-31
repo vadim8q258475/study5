@@ -13,6 +13,7 @@ class Type(models.Model):
 
 class Size(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
+    qty = models.IntegerField(default=0, verbose_name='Колличество')
 
     def __str__(self):
         return f'{self.name}'
@@ -48,17 +49,16 @@ class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
     des = models.TextField(verbose_name='Описание')
     type = models.ForeignKey(Type, on_delete=models.PROTECT, 
-                             verbose_name='Тип')
-    colors = models.ManyToManyField(Color, verbose_name='Цвет')
+                             verbose_name='Тип', blank=True, null=True)
+    color = models.ForeignKey(Color, on_delete=models.PROTECT, 
+                                   verbose_name='Цвет', blank=True, null=True)
     brands = models.ManyToManyField(Brand, verbose_name="Бренды")
-    size = models.ForeignKey(Size, on_delete=models.PROTECT, 
-                             verbose_name='Размер')
-    qty = models.IntegerField(default=0, verbose_name='Колличество')
+    sizes = models.ManyToManyField(Size, verbose_name='Размер')
     price = models.DecimalField(max_digits=10, decimal_places=2, 
                                 default=0, verbose_name='Цена')
 
     def __str__(self):
-        return f'{self.name}, {self.size.name}'
+        return f'{self.name}'
 
     class Meta:
         verbose_name = 'Товар'

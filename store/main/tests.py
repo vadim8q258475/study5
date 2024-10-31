@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework.status import HTTP_200_OK
 from .models import *
 from .serializers import *
-from .utils import generate_random_products, generate_simple_models
+from .utils import generate_random_products, generate_simple_models, generate_sizes
 from django.conf import settings
 import random as rd
 
@@ -27,7 +27,7 @@ class ProductsAPIViewTestCase(APITestCase):
 
     def setUp(self):
         self.colors = generate_simple_models(Color, settings.DEFAULT_COLORS)
-        self.sizes = generate_simple_models(Size, settings.DEFAULT_SIZES)
+        self.sizes = generate_sizes(Size, settings.DEFAULT_SIZES)
         self.brands = generate_simple_models(Brand, settings.DEFAULT_BRANDS)
         self.types = generate_simple_models(Type, settings.DEFAULT_TYPES)
         generate_random_products(20, self.colors, self.sizes, self.brands, self.types)
@@ -78,7 +78,7 @@ class ProductsAPIViewTestCase(APITestCase):
         products1 = products.order_by('price').filter(
             colors__in=[int(i) for i in colors_samples.split('+')]
             ).filter(
-                size__in=[int(i) for i in sizes_samples.split('+')]
+                sizes__in=[int(i) for i in sizes_samples.split('+')]
             ).filter(
                 type__in=[int(i) for i in types_samples.split('+')]
             ).filter(
@@ -89,7 +89,7 @@ class ProductsAPIViewTestCase(APITestCase):
         products2 = products.order_by('-name').filter(
             colors__in=[int(i) for i in colors_samples.split('+')]
             ).filter(
-                size__in=[int(i) for i in sizes_samples.split('+')]
+                sizes__in=[int(i) for i in sizes_samples.split('+')]
             ).filter(
                 type__in=[int(i) for i in types_samples.split('+')]
             ).filter(
@@ -98,7 +98,7 @@ class ProductsAPIViewTestCase(APITestCase):
                 price__range=(price_start_sample, price_end_sample)
             )
         products3 = products.filter(
-            colors__in=[int(i) for i in colors_samples.split('+')]
+            color__in=[int(i) for i in colors_samples.split('+')]
             ).order_by('price')
         products4 = products.filter(
                 type__in=[int(i) for i in types_samples.split('+')]

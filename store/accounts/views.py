@@ -29,16 +29,23 @@ class CartAPIView(APIView):
     def patch(self, request):
         id = int(request.data['product_id'])
         qty = int(request.data['product_qty'])
+        size_id = int(request.data['size_id'])
         product = Product.objects.filter(id=id)
 
         if product.exists():
             product = product[0]
-            if qty <= 0:
-                return Response('Количество товара должно быть больше нуля')
-            elif product.qty < qty:
-                return Response('Недостаточно товара в наличии, выберите меньшее значение')
-            product = CartProduct(product=product, qty=qty)
-            product.save()
+            size = product.sizes.objects.filter(id=id)
+            
+            if size.exists():
+                size = size[0]
+                
+                if qty <= 0:
+                    return Response('Количество товара должно быть больше нуля')
+                elif size.qty < qty:
+                    return Response('Товар с таким размером закончился')
+                
+                product = CartProduct(product=product, qty=qty, size_name=size.name)
+                product.save()
         else:
             return Response('Товара с таким id не существует')
         
@@ -126,10 +133,13 @@ class OrdersAPIView(APIView):
         for cart_product in cart_products:
             order_product = OrderProduct(
                 product=cart_product.product,
-                qty=cart_product.qty
+                qty=cart_product.qty,
+                size_name=cart_product.size_name
                 )
+            
             order_product.save()
             cart_product.delete()
+            # добавить изменение количества товаров в таблице при оплате заказа
             order.products.add(order_product)
         
         order.save()

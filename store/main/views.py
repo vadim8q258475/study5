@@ -54,17 +54,27 @@ class TypesAPIView(ListAPIView):
     
 
 
-class GenDelProductsAPIView(APIView):
+class GenDelDefaultModelsAPIView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
+        colors = generate_simple_models(Color, settings.DEFAULT_COLORS)
+        sizes = generate_sizes(settings.DEFAULT_SIZES)
+        brands = generate_simple_models(Brand, settings.DEFAULT_BRANDS)
+        types = generate_simple_models(Type, settings.DEFAULT_TYPES)
+        
         params = request.GET.dict()
         num = int(params['num'])
-        colors = [i for i in Color.objects.all()]
-        sizes = [i for i in Size.objects.all()]
-        brands = [i for i in Brand.objects.all()]
-        types = [i for i in Type.objects.all()]
+        
         generate_random_products(num, colors, sizes, brands, types)
         return Response('Generation succesfuly')
+    
+    def delete(self, request):
+        delete_all_models(Color.objects.all())
+        delete_all_models(Size.objects.all())
+        delete_all_models(Brand.objects.all())
+        delete_all_models(Type.objects.all())
+        delete_all_models(Product.objects.all())
+        return Response("success")
 
 class GenDelColorsAPIView(APIView):
     pass

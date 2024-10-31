@@ -80,10 +80,10 @@ def filter_queryset(queryset,
         queryset = queryset.filter(price__lte=price_end)
 
     if colors:
-        queryset = queryset.filter(colors__in=colors)
+        queryset = queryset.filter(color__in=colors)
 
     if sizes:
-        queryset = queryset.filter(size__in=sizes)
+        queryset = queryset.filter(sizes__in=sizes)
 
     if brands:
         queryset = queryset.filter(brands__in=brands)
@@ -103,6 +103,14 @@ def generate_simple_models(model, names):
         queryset.append(element)
     return queryset
 
+def generate_sizes(names):
+    queryset = []
+    for name in names:
+        element = Size.objects.create(name=name, qty=rd.randint(1, 100))
+        element.save()
+        queryset.append(element)
+    return queryset
+
 
 def generate_random_products(num_models, colors, sizes, brands, types):
     queryset = []
@@ -111,13 +119,12 @@ def generate_random_products(num_models, colors, sizes, brands, types):
             'name': f'name{i}',
             'des':  f'des{i}',
             'type': rd.choice(types),
-            'size': rd.choice(sizes),
+            'color': rd.choice(colors),
             'price': rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END),
-            'qty': rd.randint(settings.DEFAULT_QTY_START, settings.DEFAULT_QTY_END),
         }
         product = Product.objects.create(**kwargs)
-        product.colors.set(
-            rd.sample(colors, rd.randint(1, len(colors)))
+        product.sizes.set(
+            rd.sample(sizes, rd.randint(1, len(sizes)))
         )
         product.brands.set(
             rd.sample(brands, rd.randint(1, len(brands)))
@@ -126,5 +133,11 @@ def generate_random_products(num_models, colors, sizes, brands, types):
         product.save()
         queryset.append(product)
     return queryset
+
+
+
+def delete_all_models(queryset):
+    for element in queryset:
+        element.delete()
 
     

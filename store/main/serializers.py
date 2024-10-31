@@ -25,9 +25,9 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     type = TypeSerializer()
-    colors = ColorSerializer(many=True)
+    color = ColorSerializer()
     brands = BrandSerializer(many=True)
-    size = SizeSerializer()
+    sizes = SizeSerializer(many=True)
 
     class Meta:
         model = Product
