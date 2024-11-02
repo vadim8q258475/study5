@@ -28,45 +28,66 @@ class CartAPIView(APIView):
         return Response(serializer.data)
     
     def patch(self, request):
+        print(request.data)
+        user = request.user
+        cart = Cart.objects.get(user=user)
+        
         id = int(request.data['product_id'])
         qty = int(request.data['product_qty'])
         size_id = int(request.data['size_id'])
+        
         product = Product.objects.filter(id=id)
-
+        
+        # проверяем существует ли продукт 
         if product.exists():
             product = product[0]
             size = product.sizes.filter(id=size_id)
             
+            # существует ли размер
             if size.exists():
                 size = size[0]
                 
+                # есть ли достаточно товаров с таким размером в наличии
                 if qty <= 0:
                     return Response('Количество товара должно быть больше нуля')
                 elif size.qty < qty:
                     return Response('Товар с таким размером закончился')
-                
-                product = CartProduct(product=product, qty=qty, size_name=size.name)
-                product.save()
+            else:
+                Response('У выбранного товара нет такого размера')
         else:
             return Response('Товара с таким id не существует')
         
-        user = request.user
-        cart = Cart.objects.get(user=user)
-        cart.products.add(product)
-        recalc(cart)
+        cart_product = cart.products.filter(product=product, size=size)
+        if cart_product.exists():
+            cart_product = cart_product[0]
+            cart_product.qty += qty
+            cart_product.save()
+        else:   
+            cart_product = CartProduct(product=product, qty=qty, size=size)
+            cart_product.save()
+            cart.products.add(cart_product)
+                    
         return Response('Товар успешно добавлен в корзину')
     
     def delete(self, request):
         id = int(request.data['cart_product_id'])
+        qty = int(request.data['qty'])
         cart = Cart.objects.get(user=request.user)
         cart_product = cart.products.filter(id=id)
-
+    
         if cart_product.exists():
             cart_product = cart_product[0]
-            cart_product.delete()
-            return Response("Товар успешно удален из корзины пользователя")
+        else:
+            return Response("В корзине пользователя не существует продукта с таким id")
         
-        return Response("В корзине пользователя не существует продукта с таким id")
+        if qty >= cart_product.qty:
+            # cart.products.remove(cart_product)
+            cart_product.delete()
+        else:
+            cart_product.qty -= qty
+            cart_product.save()
+        
+        return Response("Товар успешно удален из корзины пользователя")
 
 
 class WishListAPIView(APIView):
@@ -132,19 +153,22 @@ class OrdersAPIView(APIView):
             delivery_type=delivery_type,
             status=status
             )
-
+        
+        total = 0
         for cart_product in cart_products:
             order_product = OrderProduct(
                 product=cart_product.product,
                 qty=cart_product.qty,
-                size_name=cart_product.size_name
+                size=cart_product.size
                 )
-            
+            total += cart_product.product.price * cart_product.qty
             order_product.save()
             cart_product.delete()
             # добавить изменение количества товаров в таблице при оплате заказа
             order.products.add(order_product)
-        
+            
+        total += delivery_type.price
+        order.total = total
         order.save()
         return Response('Заказ успешно создан')
 

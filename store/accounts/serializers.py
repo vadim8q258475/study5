@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import *
-from main.serializers import ProductSerializer
+from main.serializers import ProductSerializer, SizeSerializer
 from django.contrib.auth import get_user_model
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,6 +25,7 @@ class DeliveryTypeSerilizer(serializers.ModelSerializer):
 
 class CartProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
+    size = SizeSerializer()
 
     class Meta:
         model = CartProduct
@@ -32,6 +34,7 @@ class CartProductSerializer(serializers.ModelSerializer):
 
 class OrderProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
+    size = SizeSerializer()
 
     class Meta:
         model = OrderProduct
@@ -50,7 +53,7 @@ class CartSerilizer(serializers.ModelSerializer):
 class OrderSerilizer(serializers.ModelSerializer):
     user = UserSerializer()
     products = OrderProductSerializer(many=True)
-    delivery_type = DeliveryType()
+    delivery_type = DeliveryTypeSerilizer()
     status = OrderStatusSerilizer()
 
     class Meta:

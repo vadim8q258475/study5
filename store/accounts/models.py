@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from main.models import Product
 from django.dispatch import receiver
-from django.db.models.signals import post_save, m2m_changed
-
+from django.db.models.signals import post_save, m2m_changed, pre_delete
+from .utils import recalc
+from main.models import Size
 
 User = get_user_model()
 
@@ -37,7 +38,7 @@ class DeliveryType(models.Model):
 class CartProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
-    size_name = models.CharField(max_length=100, verbose_name="Название размера", default='size_name')
+    size = models.ForeignKey(Size, on_delete=models.PROTECT, verbose_name="Размер", blank=True, null=True)
 
     def __str__(self):
         return f'Продукт корзины {self.product.name}'
@@ -50,8 +51,8 @@ class CartProduct(models.Model):
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
-    size_name = models.CharField(max_length=100, verbose_name="Название размера", default='size_name')
-
+    size = models.ForeignKey(Size, on_delete=models.PROTECT, verbose_name="Размер", blank=True, null=True)
+    
     def __str__(self):
         return f'Продукт заказа {self.product.name}'
     
@@ -83,6 +84,7 @@ class Order(models.Model):
     status = models.ForeignKey(OrderStatus, on_delete=models.PROTECT, verbose_name='Статус')
     total = models.DecimalField(max_digits=10, decimal_places=2, 
                                 default=0, verbose_name='Цена')
+    is_paid = models.BooleanField(default=False, verbose_name="Оплата")
 
     def __str__(self):
         return f'Заказ {self.id} пользователя {self.user.username}'
@@ -130,7 +132,59 @@ def create_profile(sender, instance, created, **kwargs):
             cart=cart, 
             wish_list=wish_list
         )
+        
+        
+@receiver(m2m_changed, sender=Cart.products.through)
+def cart_update_total(sender, instance, action, *args, **kwargs):
+    if action == 'post_add' or action == 'post_remove':
+        recalc(instance)
+        
 
 
+@receiver(post_save, sender=CartProduct)
+def create_profile(sender, instance, created, **kwargs):
+    cart = Cart.objects.filter(products__in=[instance])
+    if cart.exists():
+        cart = cart[0]
+        recalc(cart)
+        
+
+@receiver(post_save, sender=Order)
+def create_profile(sender, instance, created, **kwargs):
+    if instance.is_paid:
+        for order_product in instance.products:
+            product = order_product.product
+            size_name = order_product.size_name
+            size = product.sizes.filter(name=size_name)
+            if size.exists():
+                size = size[0]
+                size.qty -= order_product.qty
+                size.save()
+                
+                
+@receiver(post_save, sender=Size)
+def create_profile(sender, instance, created, **kwargs):
+    cart_products = CartProduct.objects.all()
+    filtered_cart_products = cart_products.filter(size=instance)
+    if filtered_cart_products.exists():
+        for cart_product in filtered_cart_products:
+            if cart_product.qty >= instance.qty:
+                if instance.qty == 0:
+                    cart_product.delete()
+                else:
+                    cart_product.qty = instance.qty
+                cart_product.save()
+                
+                
+                
+@receiver(pre_delete, sender=CartProduct)
+def create_profile(sender, instance, **kwargs):
+    cart = Cart.objects.filter(products__in=[instance])
+    if cart.exists():
+        cart = cart[0]
+        cart_product_price = instance.product.price * instance.qty
+        cart.total -= cart_product_price
+        cart.save()
+                
 
 

@@ -1,23 +1,26 @@
 import "./wish_list.css";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import get_data from "../../utils.js";
+
 import EmptyPage from "../empty_page/empty_page.js";
-import Product from "../product/product.js";
+
 import WishListProduct from "./wish_list_product.js";
+import utils from "../../utils.js";
+import SETTINGS from "../../settings.js";
 
 const area = "products";
-const apiUrl = "http://127.0.0.1:8000/accounts/wish_list";
-const token = localStorage.getItem('token')
 
 function WishList() {
   const { promiseInProgress } = usePromiseTracker({ area });
   const [wishList, setWishList] = useState(null);
 
   useEffect(() => {
-    get_data(trackPromise, apiUrl, token, setWishList);
-    console.log('wish', wishList)
+    utils.getData(
+      trackPromise,
+      SETTINGS.WISH_LIST_URL,
+      SETTINGS.TOKEN,
+      setWishList
+    );
   }, [setWishList]);
 
   if (!wishList || wishList.products.length == 0) {
@@ -29,9 +32,18 @@ function WishList() {
       <div className="wishList">
         <div className="pageTitle">WISH LIST</div>
         <div className="wishContainer">
-            {wishList.products.map((prod) => (
-            <WishListProduct name={prod.name} price={prod.price} key={prod.id}></WishListProduct>
-            ))}
+          {wishList.products.map((prod) => (
+            <WishListProduct
+            name={prod.name}
+            price={prod.price}
+            type={prod.type}
+            color={prod.color}
+            sizes={prod.sizes}
+            brands={prod.brands}
+            key={prod.id}
+              
+            ></WishListProduct>
+          ))}
         </div>
       </div>
     );

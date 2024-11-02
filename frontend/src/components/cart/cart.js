@@ -1,46 +1,50 @@
-import CartProduct from "../cart_product/cart_product";
 import "./cart.css";
+import CartProduct from "../cart_product/cart_product";
+import EmptyPage from "../empty_page/empty_page.js";
+
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { useEffect, useState } from "react";
-import get_data from "../../utils.js";
-import EmptyPage from "../empty_page/empty_page.js";
-import axios from "axios";
+import SETTINGS from "../../settings.js";
+import utils from "../../utils.js";
 
+import get_data from "../../utils.js";
+import axios from "axios";
 
 const cartArea = "cart";
 const deliveryTypeArea = "deliveryTypes";
-const cartApiUrl = "http://127.0.0.1:8000/accounts/cart";
-const deliveryTypesApiUrl = "http://127.0.0.1:8000/accounts/delivery_types";
-const token = localStorage.getItem("token")
 
-
-function createOrder(cart, deliveryTypes){
+function createOrder(cart, deliveryTypes) {
   return () => {
-    const instance = axios.create({
-      baseURL: "http://127.0.0.1:8000/accounts",
-      headers: { Authorization: `Token ${token}` },
-    });
 
-    let radios = document.getElementsByClassName('deliveryRadioInput')
+    let radios = document.getElementsByClassName("deliveryRadioInput");
 
     let delivery_type_id;
     for (let i = 0; i < radios.length; i++) {
       if (radios[i].checked) {
         delivery_type_id = deliveryTypes[i].id;
-        break
+        break;
       }
     }
-
-    let address = document.getElementById('addressInput').value
-
-    // console.log({ "status_id": 0,  'delivery_type_id': delivery_type_id, 'address': address})
-
-    instance.post("orders", { "status_id": 1,  'delivery_type_id': delivery_type_id, 'address': address}).then((resp) => {
-      console.log(resp);
-    });
-  }
+    if (delivery_type_id) {
+      let address = document.getElementById("addressInput").value;
+      if (address.length == 0) {
+        alert("Write your address");
+      } else {
+        utils.sendData(
+          "accounts/orders",
+          "post",
+          {
+            status_id: 1,
+            delivery_type_id: delivery_type_id,
+            address: address,
+          },
+        );
+      }
+    } else {
+      alert("Choose delivery type");
+    }
+  };
 }
-
 
 function Cart() {
   const { cartPromiseInProgress } = usePromiseTracker({ cartArea });
@@ -51,8 +55,8 @@ function Cart() {
   const [deliveryTypes, setDeliveryTypes] = useState([]);
 
   useEffect(() => {
-    get_data(trackPromise, cartApiUrl, token, setCart);
-    get_data(trackPromise, deliveryTypesApiUrl, token, setDeliveryTypes);
+    utils.getData(trackPromise, SETTINGS.CART_URL, SETTINGS.TOKEN, setCart);
+    utils.getData(trackPromise, SETTINGS.DELIVERY_TYPES_URL, SETTINGS.TOKEN, setDeliveryTypes);
     console.log(cart);
     console.log(deliveryTypes);
   }, [setCart]);
@@ -76,7 +80,7 @@ function Cart() {
             </div>
             <div className="cartText">
               <div className="cartTitle">Address:</div> <br></br>
-              <textarea id='addressInput'></textarea>
+              <textarea id="addressInput"></textarea>
             </div>
             <div className="deliveryTypes">
               <div className="cartText">
@@ -85,14 +89,23 @@ function Cart() {
               <form>
                 {deliveryTypes.map((deliveryType) => (
                   <div className="deliveryType">
-                    <input type="radio" name="deliveryType" className="deliveryRadioInput"/>
+                    <input
+                      type="radio"
+                      name="deliveryType"
+                      className="deliveryRadioInput"
+                    />
                     {deliveryType.name}
                   </div>
                 ))}
               </form>
             </div>
             <div>
-              <button className="createOrderBtn btnStyle" onClick={createOrder(cart, deliveryTypes)}>Create order</button>
+              <button
+                className="createOrderBtn btnStyle"
+                onClick={createOrder(cart, deliveryTypes)}
+              >
+                Create order
+              </button>
             </div>
           </div>
 
@@ -101,10 +114,10 @@ function Cart() {
             <div className="cartProductsContainer"></div>
             {cart.products.map((cartProduct) => (
               <CartProduct
-                name={cartProduct.product.name}
-                price={cartProduct.product.price}
-                key={cartProduct.product.id}
+                product={cartProduct.product}
+                cartProductId={cartProduct.id}
                 qty={cartProduct.qty}
+                size_name={cartProduct.size.name}
               ></CartProduct>
             ))}
           </div>

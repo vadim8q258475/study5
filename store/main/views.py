@@ -76,11 +76,11 @@ class GenDelDefaultModelsAPIView(APIView):
         return Response('Generation succesfuly')
     
     def delete(self, request):
+        delete_all_models(Product.objects.all())
         delete_all_models(Color.objects.all())
         delete_all_models(Size.objects.all())
         delete_all_models(Brand.objects.all())
         delete_all_models(Type.objects.all())
-        delete_all_models(Product.objects.all())
         return Response("success")
 
 class GenDelColorsAPIView(APIView):

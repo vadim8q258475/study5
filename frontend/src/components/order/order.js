@@ -4,7 +4,7 @@ import Product from "../product/product.js";
 function Order(props) {
   return (
     <div className="order" key={props.key}>
-      <div className="orderTitle">Order №{props.key}</div>
+      <div className="orderTitle">Order №{props.id}</div>
       <div className="orderContent">
         <div className="orderText">
           <div className="orderTextTitle">DeliveryType:</div>
@@ -28,6 +28,10 @@ function Order(props) {
             <Product
               name={order_prod.product.name}
               price={order_prod.product.price}
+              type={order_prod.product.type}
+              color={order_prod.product.color}
+              sizes={[{name: order_prod.size.name}]}
+              brands={order_prod.product.brands}
               key={order_prod.product.id}
             ></Product>
           ))}

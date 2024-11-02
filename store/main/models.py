@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save, m2m_changed, pre_delete
 
 class Type(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')

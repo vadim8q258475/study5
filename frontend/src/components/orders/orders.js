@@ -5,17 +5,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import get_data from "../../utils.js"
 import EmptyPage from "../empty_page/empty_page.js";
+import SETTINGS from "../../settings.js";
+import utils from "../../utils.js";
 
 const area = "orders";
-const apiUrl = "http://127.0.0.1:8000/accounts/orders";
-const token = localStorage.getItem("token")
 
 function Orders() {
   const { promiseInProgress } = usePromiseTracker({ area });
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    get_data(trackPromise, apiUrl, token, setOrders)
+    utils.getData(trackPromise, SETTINGS.ORDERS_URL, SETTINGS.TOKEN, setOrders)
   }, [setOrders]);
 
   if (orders.length == 0) {
@@ -33,6 +33,8 @@ function Orders() {
             status={order.status.name}
             address={order.address}
             total={order.total}
+            key={order.id}
+            id={order.id}
           />
         ))}
       </div>

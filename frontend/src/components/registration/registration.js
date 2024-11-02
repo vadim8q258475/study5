@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import "./registration.css";
 import axios from "axios";
+import SETTINGS from "../../settings";
+import utils from "../../utils";
 
-const apiUrl = "http://127.0.0.1:8000";
+
 
 function postRegInfo() {
   let name = document.getElementById("regNameInput").value;
@@ -17,10 +19,10 @@ function postRegInfo() {
   formData.append("password", password)
 
   const instance = axios.create({
-    baseURL: apiUrl,
+    baseURL: SETTINGS.ACCOUNTS_URL,
   });
 
-  instance.post("/accounts/api/v1/auth/users/", formData).then((resp) => {
+  instance.post("api/v1/auth/users/", formData).then((resp) => {
     console.log(resp.data, resp.status);
   }).catch(err => console.log(err));
 }

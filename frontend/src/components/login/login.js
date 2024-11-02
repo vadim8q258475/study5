@@ -3,8 +3,7 @@ import "./login.css";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-const apiUrl = "http://127.0.0.1:8000";
+import SETTINGS from "../../settings.js";
 
 function postLoginInfo(setIsAuth) {
   return () => {
@@ -18,11 +17,11 @@ function postLoginInfo(setIsAuth) {
     formData.append("password", password);
 
     const instance = axios.create({
-      baseURL: apiUrl,
+      baseURL: SETTINGS.ACCOUNTS_URL,
     });
 
     instance
-      .post("/accounts/auth/token/login/", formData)
+      .post("auth/token/login/", formData)
       .then((resp) => {
         localStorage.setItem("token", resp.data["auth_token"]);
         console.log(localStorage.getItem("token"));

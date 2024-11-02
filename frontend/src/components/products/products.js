@@ -6,27 +6,100 @@ import axios from "axios";
 import get_data from "../../utils.js";
 import EmptyPage from "../empty_page/empty_page.js";
 import { Link } from "react-router-dom";
+import utils from "../../utils.js";
+import SETTINGS from "../../settings.js";
 
-const baseApiUrl = "http://127.0.0.1:8000";
-const token = localStorage.getItem("token")
+const sortTypes = ["price", "-price", "name", "-name"];
+
+function getChecked(values, elements) {
+  let valueIds = [];
+  for (let i = 0; i < elements.length; i++) {
+    if (elements[i].checked) {
+      valueIds.push(values[i].id);
+    }
+  }
+  return valueIds;
+}
+
+
+function resetCheckBoxes(elements) {
+  for (let elem of elements) {
+    elem.checked = false;
+  }
+}
+
+function applyFilterChanges(colors, sizes, brands, types, setProducts) {
+  return () => {
+    let sortByInputs = document.getElementsByClassName("sortByRadio");
+
+    let colorInputs = document.getElementsByClassName("colorCheckBox");
+    let sizeInputs = document.getElementsByClassName("sizeCheckBox");
+    let typeInputs = document.getElementsByClassName("typeCheckBox");
+    let brandInputs = document.getElementsByClassName("brandCheckBox");
+
+    let priceInput = document.getElementsByClassName("rangeInput")[0];
+
+    let sortId;
+    for (let i = 0; i < sortByInputs.length; i++) {
+      if (sortByInputs[i].checked) {
+        sortId = i;
+        break;
+      }
+    }
+
+    let colorIds = getChecked(colors, colorInputs);
+    let brandIds = getChecked(brands, brandInputs);
+    let sizeIds = getChecked(sizes, sizeInputs);
+    let typeIds = getChecked(types, typeInputs);
+    
+    let obj = {
+      colors: colorIds,
+      brands: brandIds,
+      sizes: sizeIds,
+      types: typeIds,
+    }
+
+    let params = utils.makeQueryStrFromObj(obj)
+  
+    if (sortId || sortId == 0) {
+      if (sortTypes[sortId][0] == "-") {
+        params += "reverse=True&";
+        params += "sort_by=" + sortTypes[sortId - 1] + "&";
+      } else {
+        params += "sort_by=" + sortTypes[sortId] + "&";
+      }
+    }
+
+    utils.sendData(
+      "products",
+      "get",
+      {},
+      params,
+      setProducts
+    );
+  };
+}
+
+function resetFilters() {
+  let sortByInputs = document.getElementsByClassName("sortByRadio");
+  let colorInputs = document.getElementsByClassName("colorCheckBox");
+  let sizeInputs = document.getElementsByClassName("sizeCheckBox");
+  let typeInputs = document.getElementsByClassName("typeCheckBox");
+  let brandInputs = document.getElementsByClassName("brandCheckBox");
+
+  resetCheckBoxes(sortByInputs);
+  resetCheckBoxes(colorInputs);
+  resetCheckBoxes(sizeInputs);
+  resetCheckBoxes(typeInputs);
+  resetCheckBoxes(brandInputs);
+}
 
 const productsArea = "products";
-const productsApiUrl = `${baseApiUrl}/products`;
-
 const colorsArea = "colors";
-const colorsApiUrl = `${baseApiUrl}/colors`;
-
 const sizesArea = "sizes";
-const sizesApiUrl = `${baseApiUrl}/sizes`;
-
 const brandsArea = "brands";
-const brandsApiUrl = `${baseApiUrl}/brands`;
-
 const typesArea = "types";
-const typesApiUrl = `${baseApiUrl}/types`;
 
-// const Area = "";
-// const ApiUrl = `${baseApiUrl}/`
 
 function Products() {
   const { productsPromiseInProgress } = usePromiseTracker({ productsArea });
@@ -45,12 +118,12 @@ function Products() {
   const [types, setTypes] = useState([]);
 
   useEffect(() => {
-    get_data(trackPromise, productsApiUrl, token, setProducts);
-    get_data(trackPromise, colorsApiUrl, token, setColors);
-    get_data(trackPromise, sizesApiUrl, token, setSizes);
-    get_data(trackPromise, brandsApiUrl, token, setBrands);
-    get_data(trackPromise, typesApiUrl, token, setTypes);
-  }, [setProducts]);
+    utils.getData(trackPromise, SETTINGS.PRODUCTS_URL, SETTINGS.TOKEN, setProducts);
+    utils.getData(trackPromise, SETTINGS.COLORS_URL, SETTINGS.TOKEN, setColors);
+    utils.getData(trackPromise, SETTINGS.SIZES_URL, SETTINGS.TOKEN, setSizes);
+    utils.getData(trackPromise, SETTINGS.BRANDS_URL, SETTINGS.TOKEN, setBrands);
+    utils.getData(trackPromise, SETTINGS.TYPES_URL, SETTINGS.TOKEN, setTypes);
+  }, [setProducts, setBrands, setColors, setTypes, setSizes]);
 
   if (
     productsPromiseInProgress ||
@@ -68,30 +141,47 @@ function Products() {
           <div className="productsSortFilter">
             <div className="filter">
               <div className="filterTitle">Sort By</div>
-
-              <div className="radioElement">
-                <input type="radio" />
-                Price increase
-              </div>
-              <div className="radioElement">
-                <input type="radio" />
-                Price decrease
-              </div>
-              <div className="radioElement">
-                <input type="radio" />
-                From A to Z
-              </div>
-              <div className="radioElement">
-                <input type="radio" />
-                From Z to A
-              </div>
+              <form>
+                <div className="radioElement">
+                  <input
+                    type="radio"
+                    name="sortByRadio"
+                    className="sortByRadio"
+                  />
+                  Price increase
+                </div>
+                <div className="radioElement">
+                  <input
+                    type="radio"
+                    name="sortByRadio"
+                    className="sortByRadio"
+                  />
+                  Price decrease
+                </div>
+                <div className="radioElement">
+                  <input
+                    type="radio"
+                    name="sortByRadio"
+                    className="sortByRadio"
+                  />
+                  From A to Z
+                </div>
+                <div className="radioElement">
+                  <input
+                    type="radio"
+                    name="sortByRadio"
+                    className="sortByRadio"
+                  />
+                  From Z to A
+                </div>
+              </form>
             </div>
             <div className="filter">
               <div className="filterTitle">Colors</div>
 
               {colors.map((color) => (
                 <div className="choiceElement">
-                  <input type="checkbox" />
+                  <input type="checkbox" className="colorCheckBox" />
                   {color.name}
                 </div>
               ))}
@@ -101,7 +191,7 @@ function Products() {
 
               {brands.map((brand) => (
                 <div className="choiceElement">
-                  <input type="checkbox" />
+                  <input type="checkbox" className="brandCheckBox" />
                   {brand.name}
                 </div>
               ))}
@@ -111,7 +201,7 @@ function Products() {
 
               {sizes.map((size) => (
                 <div className="choiceElement">
-                  <input type="checkbox" />
+                  <input type="checkbox" className="sizeCheckBox" />
                   {size.name}
                 </div>
               ))}
@@ -121,7 +211,7 @@ function Products() {
 
               {types.map((type) => (
                 <div className="choiceElement">
-                  <input type="checkbox" />
+                  <input type="checkbox" className="typeCheckBox" />
                   {type.name}
                 </div>
               ))}
@@ -134,18 +224,45 @@ function Products() {
                 <input className="rangePrice" value={12000}></input>
               </div>
             </div>
-            <div className="addFiltersBtnContainer">
-              <button className="addFiltersBtn btnStyle">Apply Changes</button>
+            <div className="addFiltersBtnGroup">
+              <div className="addFiltersBtnContainer">
+                <button
+                  className="addFiltersBtn btnStyle"
+                  onClick={applyFilterChanges(
+                    colors,
+                    sizes,
+                    brands,
+                    types,
+                    setProducts
+                  )}
+                >
+                  Apply Changes
+                </button>
+              </div>
+              <div className="addFiltersBtnContainer">
+                <button
+                  className="addFiltersBtn btnStyle"
+                  onClick={resetFilters}
+                >
+                  Reset
+                </button>
+              </div>
             </div>
           </div>
           <div className="productsContainerWrapper">
             <div className="productsContainer">
               {products.map((prod) => (
-                <Link to={`products/${prod.id}`}><Product
-                  name={prod.name}
-                  price={prod.price}
-                  key={prod.id}
-                ></Product></Link>
+                <Link to={`products/${prod.id}`}>
+                  <Product
+                    name={prod.name}
+                    price={prod.price}
+                    type={prod.type}
+                    color={prod.color}
+                    sizes={prod.sizes}
+                    brands={prod.brands}
+                    key={prod.id}
+                  ></Product>
+                </Link>
               ))}
             </div>
           </div>

@@ -124,10 +124,14 @@ def generate_random_products(num_models, colors, sizes, brands, types):
         }
         product = Product.objects.create(**kwargs)
         product.sizes.set(
-            rd.sample(sizes, rd.randint(1, len(sizes)))
+            rd.sample(sizes, rd.randint(3, len(sizes)))
         )
+        ln_brands = 3
+        if len(brands) < ln_brands:
+            ln_brands = len(brands)
+            
         product.brands.set(
-            rd.sample(brands, rd.randint(1, len(brands)))
+            rd.sample(brands, rd.randint(1, ln_brands))
         )
        
         product.save()
