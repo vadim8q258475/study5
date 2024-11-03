@@ -1,9 +1,7 @@
 const BASE_URL = "http://127.0.0.1:8000";
 
 const PRODUCTS_URL = `${BASE_URL}/products`;
-const COLORS_URL = `${BASE_URL}/colors`;
 const TYPES_URL = `${BASE_URL}/types`;
-const SIZES_URL = `${BASE_URL}/sizes`;
 const BRANDS_URL = `${BASE_URL}/brands`;
 const PRODUCT_IDS_URL = `${BASE_URL}/product_ids`;
 
@@ -22,9 +20,7 @@ const TOKEN = localStorage.getItem("token");
 const SETTINGS = {
   BASE_URL: BASE_URL,
   PRODUCTS_URL: PRODUCTS_URL,
-  COLORS_URL: COLORS_URL,
   TYPES_URL: TYPES_URL,
-  SIZES_URL: SIZES_URL,
   BRANDS_URL: BRANDS_URL,
   PRODUCT_IDS_URL: PRODUCT_IDS_URL,
   ACCOUNTS_URL: ACCOUNTS_URL,

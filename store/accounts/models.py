@@ -4,7 +4,6 @@ from main.models import Product
 from django.dispatch import receiver
 from django.db.models.signals import post_save, m2m_changed, pre_delete
 from .utils import recalc
-from main.models import Size
 
 User = get_user_model()
 
@@ -38,7 +37,6 @@ class DeliveryType(models.Model):
 class CartProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
-    size = models.ForeignKey(Size, on_delete=models.PROTECT, verbose_name="Размер", blank=True, null=True)
 
     def __str__(self):
         return f'Продукт корзины {self.product.name}'
@@ -51,7 +49,6 @@ class CartProduct(models.Model):
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     qty = models.IntegerField(verbose_name='Количество')
-    size = models.ForeignKey(Size, on_delete=models.PROTECT, verbose_name="Размер", blank=True, null=True)
     
     def __str__(self):
         return f'Продукт заказа {self.product.name}'
@@ -152,30 +149,21 @@ def create_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Order)
 def create_profile(sender, instance, created, **kwargs):
     if instance.is_paid:
-        for order_product in instance.products:
+        print("foo")
+        for order_product in instance.products.all():
             product = order_product.product
-            size_name = order_product.size_name
-            size = product.sizes.filter(name=size_name)
-            if size.exists():
-                size = size[0]
-                size.qty -= order_product.qty
-                size.save()
-                
-                
-@receiver(post_save, sender=Size)
-def create_profile(sender, instance, created, **kwargs):
-    cart_products = CartProduct.objects.all()
-    filtered_cart_products = cart_products.filter(size=instance)
-    if filtered_cart_products.exists():
-        for cart_product in filtered_cart_products:
-            if cart_product.qty >= instance.qty:
-                if instance.qty == 0:
-                    cart_product.delete()
-                else:
-                    cart_product.qty = instance.qty
-                cart_product.save()
-                
-                
+            product.qty -= order_product.qty
+            product.save()
+            cart_products = CartProduct.objects.filter(product=product)
+            if cart_products.exists():
+                for cart_product in cart_products: 
+                    if cart_product.qty > product.qty:
+                        cart_product.qty = product.qty
+                        cart_product.save()
+                    if cart_product.qty == 0:
+                        cart_product.delete()
+        
+            
                 
 @receiver(pre_delete, sender=CartProduct)
 def create_profile(sender, instance, **kwargs):

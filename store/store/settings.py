@@ -116,12 +116,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-DEFAULT_COLORS = ['red', 'blue', 'green', 'yellow', 'pink', 'black', 'white']
-DEFAULT_SIZES = ['XXL', 'XL', 'L', 'M', 'S', 'XS']
 DEFAULT_BRANDS = ['Nike', 'Amiri', 'Balenciaga', 'Adidas', 'Rick Owens', 'Bape']
 DEFAULT_TYPES = ['Hoodie', 'T-shirt', 'Jeans', 'Jacket', 'Pants']
-DEFAULT_PRICE_START = 1000
-DEFAULT_PRICE_END = 100_000
+DEFAULT_PRICE_START = 10
+DEFAULT_PRICE_END = 10000
 DEFAULT_QTY_START = 1
 DEFAULT_QTY_END = 1000
 
@@ -135,7 +133,7 @@ SORT_BY_KEY = 'sort_by'
 REVERSE_KEY = 'reverse'
 PRICE_START_KEY = 'price_start'
 PRICE_END_KEY = 'price_end'
-COLORS_KEY = 'colors'
-SIZES_KEY = 'sizes'
 BRANDS_KEY = 'brands'
 TYPES_KEY = 'types'
+
+LOREM = "Est minim adipisicing ex dolor et duis aliquip laborum incididunt eiusmod commodo esse ut laborum. Occaecat dolor fugiat magna proident et eiusmod cillum excepteur sunt et sint in et esse. Ea mollit aliqua ullamco voluptate non. Aute reprehenderit ad veniam est aliquip esse aliquip exercitation. Incididunt aute ad reprehenderit ullamco dolor ut ullamco."

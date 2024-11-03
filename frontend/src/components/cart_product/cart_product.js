@@ -14,23 +14,14 @@ function removeFromCart(cartProductId, qty) {
   };
 }
 
-function changeQty(cartProductId, product, size_name, is_plus) {
+function changeQty(cartProductId, product, is_plus) {
   return () => {
     let product_qty = 1;
 
     if (is_plus) {
-      let size_id;
-      for (let size of product.sizes) {
-        if (size.name == size_name) {
-          size_id = size.id;
-          break;
-        }
-      }
-
       utils.sendData("accounts/cart", "patch", {
         product_id: product.id,
         product_qty: product_qty,
-        size_id: size_id,
       });
     } else {
       utils.sendData("accounts/cart", "delete", {
@@ -51,9 +42,8 @@ function CartProduct(props) {
         name={props.product.name}
         price={props.product.price}
         type={props.product.type}
-        color={props.product.color}
-        sizes={[{ name: props.size_name }]}
-        brands={props.product.brands}
+        qty={props.product.qty}
+        brand={props.product.brand}
         key={props.product.id}
       ></Product>
       <div className="cartProductInterface">
@@ -63,7 +53,6 @@ function CartProduct(props) {
             onClick={changeQty(
               props.cartProductId,
               props.product,
-              props.size_name,
               false
             )}
           >
@@ -75,7 +64,6 @@ function CartProduct(props) {
             onClick={changeQty(
               props.cartProductId,
               props.product,
-              props.size_name,
               true
             )}
           >

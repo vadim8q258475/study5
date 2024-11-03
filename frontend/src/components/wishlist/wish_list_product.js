@@ -2,20 +2,20 @@ import "./wish_list_product.css";
 import Product from "../product/product.js";
 
 function WishListProduct(props) {
-    return (
+  return (
     <div className="wishListProduct">
-            <div className="like"></div>
-            <Product name={props.name}
-                    price={props.price}
-                    type={props.type}
-                    color={props.color}
-                    sizes={props.sizes}
-                    brands={props.brands}
-                    key={props.id}></Product>
+      <button className="like btnStyle">D</button>
+      <Product
+        name={props.name}
+        price={props.price}
+        type={props.type}
+        brand={props.brand}
+        key={props.id}
+        des={props.des}
+        qty={props.qty}
+      ></Product>
     </div>
-    )
-
-  
+  );
 }
 
 export default WishListProduct;

@@ -7,9 +7,6 @@ import { useEffect, useState } from "react";
 import SETTINGS from "../../settings.js";
 import utils from "../../utils.js";
 
-import get_data from "../../utils.js";
-import axios from "axios";
-
 const cartArea = "cart";
 const deliveryTypeArea = "deliveryTypes";
 
@@ -25,6 +22,7 @@ function createOrder(cart, deliveryTypes) {
         break;
       }
     }
+
     if (delivery_type_id) {
       let address = document.getElementById("addressInput").value;
       if (address.length == 0) {
@@ -117,7 +115,6 @@ function Cart() {
                 product={cartProduct.product}
                 cartProductId={cartProduct.id}
                 qty={cartProduct.qty}
-                size_name={cartProduct.size.name}
               ></CartProduct>
             ))}
           </div>

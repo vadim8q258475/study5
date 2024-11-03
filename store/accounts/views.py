@@ -28,42 +28,38 @@ class CartAPIView(APIView):
         return Response(serializer.data)
     
     def patch(self, request):
-        print(request.data)
         user = request.user
         cart = Cart.objects.get(user=user)
         
         id = int(request.data['product_id'])
         qty = int(request.data['product_qty'])
-        size_id = int(request.data['size_id'])
         
         product = Product.objects.filter(id=id)
         
         # проверяем существует ли продукт 
         if product.exists():
             product = product[0]
-            size = product.sizes.filter(id=size_id)
-            
-            # существует ли размер
-            if size.exists():
-                size = size[0]
-                
-                # есть ли достаточно товаров с таким размером в наличии
-                if qty <= 0:
-                    return Response('Количество товара должно быть больше нуля')
-                elif size.qty < qty:
-                    return Response('Товар с таким размером закончился')
-            else:
-                Response('У выбранного товара нет такого размера')
         else:
             return Response('Товара с таким id не существует')
         
-        cart_product = cart.products.filter(product=product, size=size)
+        cart_product = cart.products.filter(product=product)
+        
+        
+        if qty > product.qty:
+                return Response('Недостаточно товара в наличии')
+        elif qty <= 0:
+                return Response('Количество товара для добавления должно быть больше 0')
+        
         if cart_product.exists():
             cart_product = cart_product[0]
+            
+            if qty + cart_product.qty > product.qty:
+                return Response('Недостаточно товара в наличии')
+            
             cart_product.qty += qty
             cart_product.save()
         else:   
-            cart_product = CartProduct(product=product, qty=qty, size=size)
+            cart_product = CartProduct(product=product, qty=qty)
             cart_product.save()
             cart.products.add(cart_product)
                     
@@ -151,7 +147,8 @@ class OrdersAPIView(APIView):
             user=user,
             address=address,
             delivery_type=delivery_type,
-            status=status
+            status=status,
+            is_paid=True
             )
         
         total = 0
@@ -159,7 +156,6 @@ class OrdersAPIView(APIView):
             order_product = OrderProduct(
                 product=cart_product.product,
                 qty=cart_product.qty,
-                size=cart_product.size
                 )
             total += cart_product.product.price * cart_product.qty
             order_product.save()

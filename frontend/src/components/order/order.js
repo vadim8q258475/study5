@@ -26,13 +26,12 @@ function Order(props) {
         <div className="orderProducts">
           {props.order_products.map((order_prod) => (
             <Product
-              name={order_prod.product.name}
-              price={order_prod.product.price}
-              type={order_prod.product.type}
-              color={order_prod.product.color}
-              sizes={[{name: order_prod.size.name}]}
-              brands={order_prod.product.brands}
-              key={order_prod.product.id}
+            name={order_prod.product.name}
+            price={order_prod.product.price}
+            type={order_prod.product.type}
+            qty={order_prod.product.qty}
+            brand={order_prod.product.brand}
+            key={order_prod.product.id}
             ></Product>
           ))}
         </div>

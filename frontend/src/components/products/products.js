@@ -2,9 +2,6 @@ import "./products.css";
 import Product from "../product/product.js";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import get_data from "../../utils.js";
-import EmptyPage from "../empty_page/empty_page.js";
 import { Link } from "react-router-dom";
 import utils from "../../utils.js";
 import SETTINGS from "../../settings.js";
@@ -28,13 +25,11 @@ function resetCheckBoxes(elements) {
   }
 }
 
-function applyFilterChanges(colors, sizes, brands, types, setProducts) {
+function applyFilterChanges(colors, brands, setProducts) {
   return () => {
     let sortByInputs = document.getElementsByClassName("sortByRadio");
 
     let colorInputs = document.getElementsByClassName("colorCheckBox");
-    let sizeInputs = document.getElementsByClassName("sizeCheckBox");
-    let typeInputs = document.getElementsByClassName("typeCheckBox");
     let brandInputs = document.getElementsByClassName("brandCheckBox");
 
     let priceInput = document.getElementsByClassName("rangeInput")[0];
@@ -49,14 +44,10 @@ function applyFilterChanges(colors, sizes, brands, types, setProducts) {
 
     let colorIds = getChecked(colors, colorInputs);
     let brandIds = getChecked(brands, brandInputs);
-    let sizeIds = getChecked(sizes, sizeInputs);
-    let typeIds = getChecked(types, typeInputs);
     
     let obj = {
       colors: colorIds,
       brands: brandIds,
-      sizes: sizeIds,
-      types: typeIds,
     }
 
     let params = utils.makeQueryStrFromObj(obj)
@@ -82,21 +73,15 @@ function applyFilterChanges(colors, sizes, brands, types, setProducts) {
 
 function resetFilters() {
   let sortByInputs = document.getElementsByClassName("sortByRadio");
-  let colorInputs = document.getElementsByClassName("colorCheckBox");
-  let sizeInputs = document.getElementsByClassName("sizeCheckBox");
   let typeInputs = document.getElementsByClassName("typeCheckBox");
   let brandInputs = document.getElementsByClassName("brandCheckBox");
 
   resetCheckBoxes(sortByInputs);
-  resetCheckBoxes(colorInputs);
-  resetCheckBoxes(sizeInputs);
   resetCheckBoxes(typeInputs);
   resetCheckBoxes(brandInputs);
 }
 
 const productsArea = "products";
-const colorsArea = "colors";
-const sizesArea = "sizes";
 const brandsArea = "brands";
 const typesArea = "types";
 
@@ -104,12 +89,6 @@ const typesArea = "types";
 function Products() {
   const { productsPromiseInProgress } = usePromiseTracker({ productsArea });
   const [products, setProducts] = useState([]);
-
-  const { colorsPromiseInProgress } = usePromiseTracker({ colorsArea });
-  const [colors, setColors] = useState([]);
-
-  const { sizesPromiseInProgress } = usePromiseTracker({ sizesArea });
-  const [sizes, setSizes] = useState([]);
 
   const { brandsPromiseInProgress } = usePromiseTracker({ brandsArea });
   const [brands, setBrands] = useState([]);
@@ -119,18 +98,14 @@ function Products() {
 
   useEffect(() => {
     utils.getData(trackPromise, SETTINGS.PRODUCTS_URL, SETTINGS.TOKEN, setProducts);
-    utils.getData(trackPromise, SETTINGS.COLORS_URL, SETTINGS.TOKEN, setColors);
-    utils.getData(trackPromise, SETTINGS.SIZES_URL, SETTINGS.TOKEN, setSizes);
     utils.getData(trackPromise, SETTINGS.BRANDS_URL, SETTINGS.TOKEN, setBrands);
     utils.getData(trackPromise, SETTINGS.TYPES_URL, SETTINGS.TOKEN, setTypes);
-  }, [setProducts, setBrands, setColors, setTypes, setSizes]);
+  }, [setProducts, setBrands, setTypes]);
 
   if (
     productsPromiseInProgress ||
-    sizesPromiseInProgress ||
     brandsPromiseInProgress ||
-    typesPromiseInProgress ||
-    colorsPromiseInProgress
+    typesPromiseInProgress 
   ) {
     return <div>Подождите, данные загружаются!</div>;
   } else {
@@ -176,19 +151,9 @@ function Products() {
                 </div>
               </form>
             </div>
-            <div className="filter">
-              <div className="filterTitle">Colors</div>
-
-              {colors.map((color) => (
-                <div className="choiceElement">
-                  <input type="checkbox" className="colorCheckBox" />
-                  {color.name}
-                </div>
-              ))}
-            </div>
+        
             <div className="filter">
               <div className="filterTitle">Brands</div>
-
               {brands.map((brand) => (
                 <div className="choiceElement">
                   <input type="checkbox" className="brandCheckBox" />
@@ -196,19 +161,9 @@ function Products() {
                 </div>
               ))}
             </div>
-            <div className="filter">
-              <div className="filterTitle">Sizes</div>
 
-              {sizes.map((size) => (
-                <div className="choiceElement">
-                  <input type="checkbox" className="sizeCheckBox" />
-                  {size.name}
-                </div>
-              ))}
-            </div>
             <div className="filter">
               <div className="filterTitle">Types</div>
-
               {types.map((type) => (
                 <div className="choiceElement">
                   <input type="checkbox" className="typeCheckBox" />
@@ -216,6 +171,8 @@ function Products() {
                 </div>
               ))}
             </div>
+
+
             <div className="filter">
               <div className="filterTitle">Price</div>
               <div className="rangePriceWrapper">
@@ -229,8 +186,6 @@ function Products() {
                 <button
                   className="addFiltersBtn btnStyle"
                   onClick={applyFilterChanges(
-                    colors,
-                    sizes,
                     brands,
                     types,
                     setProducts
@@ -257,10 +212,10 @@ function Products() {
                     name={prod.name}
                     price={prod.price}
                     type={prod.type}
-                    color={prod.color}
-                    sizes={prod.sizes}
-                    brands={prod.brands}
+                    brand={prod.brand}
                     key={prod.id}
+                    des={prod.des}
+                    qty={prod.qty}
                   ></Product>
                 </Link>
               ))}

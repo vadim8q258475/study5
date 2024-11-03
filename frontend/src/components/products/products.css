@@ -7,6 +7,10 @@
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 1fr;
 }
+.productsPageContainer{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
 .filterTitle{
     font-size: 25px;
     font-weight: bold;
@@ -55,4 +59,14 @@
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+}
+
+
+.productsSortFilter{
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    
+    width: fit-content;
+    height: fit-content;
 }

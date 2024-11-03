@@ -34,14 +34,13 @@ function WishList() {
         <div className="wishContainer">
           {wishList.products.map((prod) => (
             <WishListProduct
-            name={prod.name}
-            price={prod.price}
-            type={prod.type}
-            color={prod.color}
-            sizes={prod.sizes}
-            brands={prod.brands}
-            key={prod.id}
-              
+              name={prod.name}
+              price={prod.price}
+              type={prod.type}
+              brand={prod.brand}
+              key={prod.id}
+              des={prod.des}
+              qty={prod.qty}
             ></WishListProduct>
           ))}
         </div>

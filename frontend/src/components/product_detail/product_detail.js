@@ -12,7 +12,7 @@ const productArea = "product";
 
 function addToWishList(product) {
   return () => {
-    utils.sendData("account/wish_list", "patch", { product_id: product.id });
+    utils.sendData("accounts/wish_list", "patch", { product_id: product.id });
   };
 }
 
@@ -20,24 +20,10 @@ const lorem = "Est minim adipisicing ex dolor et duis aliquip laborum incididunt
 
 function addToCart(product) {
   return () => {
-    let inputs = document.getElementsByClassName("radioInput");
-    let size_id;
-    for (let i = 0; i < inputs.length; i++) {
-      if (inputs[i].checked) {
-        size_id = product.sizes[i].id;
-        break;
-      }
-    }
-
-    if (size_id) {
-      utils.sendData("accounts/cart", "patch", {
-        product_id: product.id,
-        size_id: size_id,
-        product_qty: 1,
-      }, );
-    } else {
-      alert("Choose size");
-    }
+    utils.sendData("accounts/cart", "patch", {
+      product_id: product.id,
+      product_qty: 1,
+    }, );
   };
 }
 
@@ -59,43 +45,25 @@ function ProductDetail(props) {
         
         <div className="productDetailInfo">
           <div className="productDetailInfoHead">{product.name}</div>
+
           <div className="productDetailInfoText">
-            <div className="productDetailInfoTitle">Description: </div> <div className="lorem">{lorem}</div>
-            {product.description}
+            <div className="productDetailInfoTitle">Description: </div> <div className="lorem">{product.des}</div>
           </div>
-          {/* <div className="productDetailInfoText">
-          <div className="productDetailInfoTitle">Brand:</div> <div className="productsDetailValuesList">
-            {product.brands.map((brand) => (
-              <div className="productsDetailValuesListEl noBorder">{brand.name}</div>
-            ))}
-            </div>
-          </div> */}
+
           <div className="productDetailInfoText">
-            <div className="productDetailInfoTitle">Color:</div>
-            {product.color.name}
+            <div className="productDetailInfoTitle">Brand:</div>
+            {product.brand.name}
           </div>
+
           <div className="productDetailInfoText">
-            <div className="productDetailInfoTitle">Sizes:</div>
-            <div className="productsDetailValuesList">
-              <form>
-                {product.sizes.map((size) => (
-                  <div>
-                    <input
-                      className="radioInput"
-                      type="radio"
-                      name="sizeRadio"
-                    ></input>
-                    <div className="productsDetailValuesListEl">
-                      {size.name} <div className="sizeQty">{size.qty}</div>
-                    </div>
-                  </div>
-                ))}
-              </form>
-            </div>
+            <div className="productDetailInfoTitle">Type:</div>
+            {product.type.name}
           </div>
+        
           <div className="productDetailInfoText">
             <div className="productDetailInfoTitle">Price:</div> {Number(product.price)} $
           </div>
+
           <div className="productDetailBtnGroup">
             <button
               className="btnStyle productDetailBtn"
@@ -110,6 +78,7 @@ function ProductDetail(props) {
               Add to wish list
             </button>
           </div>
+
         </div>
       </div>
     );

@@ -36,14 +36,6 @@ def preprocess_queryset(queryset, params: dict):
     else:
         price_end = None
 
-    if settings.COLORS_KEY in params.keys():
-        colors = [int(i) for i in params[settings.COLORS_KEY].split()]
-    else:
-        colors = None
-    if settings.SIZES_KEY in params.keys():
-        sizes = [int(i) for i in params[settings.SIZES_KEY].split()]
-    else:
-        sizes = None
     if settings.BRANDS_KEY in params.keys():
         brands = [int(i) for i in params[settings.BRANDS_KEY].split()]
     else:
@@ -56,7 +48,6 @@ def preprocess_queryset(queryset, params: dict):
     queryset = sort_queryset(queryset, sort_by, reverse=reverse)
     queryset = filter_queryset(queryset,
                                price_start, price_end,
-                               colors, sizes,
                                brands, types)
     return queryset
 
@@ -69,7 +60,6 @@ def sort_queryset(queryset, field_name, reverse=settings.REVERSE_FALSE_VALUE):
 
 def filter_queryset(queryset,
                     price_start, price_end,
-                    colors, sizes,
                     brands, types):
 
     if price_start and price_end:
@@ -79,14 +69,8 @@ def filter_queryset(queryset,
     elif price_end and not price_start:
         queryset = queryset.filter(price__lte=price_end)
 
-    if colors:
-        queryset = queryset.filter(color__in=colors)
-
-    if sizes:
-        queryset = queryset.filter(sizes__in=sizes)
-
     if brands:
-        queryset = queryset.filter(brands__in=brands)
+        queryset = queryset.filter(brand__in=brands)
 
     if types:
         queryset = queryset.filter(type__in=types)
@@ -103,36 +87,19 @@ def generate_simple_models(model, names):
         queryset.append(element)
     return queryset
 
-def generate_sizes(names):
-    queryset = []
-    for name in names:
-        element = Size.objects.create(name=name, qty=rd.randint(1, 100))
-        element.save()
-        queryset.append(element)
-    return queryset
 
-
-def generate_random_products(num_models, colors, sizes, brands, types):
+def generate_random_products(num_models, brands, types):
     queryset = []
     for i in range(num_models):
         kwargs = {
             'name': f'name{i}',
-            'des':  f'des{i}',
+            'des':  settings.LOREM,
             'type': rd.choice(types),
-            'color': rd.choice(colors),
+            'brand': rd.choice(brands),
             'price': rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END),
+            'qty': rd.randint(settings.DEFAULT_QTY_START, settings.DEFAULT_QTY_END)
         }
         product = Product.objects.create(**kwargs)
-        product.sizes.set(
-            rd.sample(sizes, rd.randint(3, len(sizes)))
-        )
-        ln_brands = 3
-        if len(brands) < ln_brands:
-            ln_brands = len(brands)
-            
-        product.brands.set(
-            rd.sample(brands, rd.randint(1, ln_brands))
-        )
        
         product.save()
         queryset.append(product)

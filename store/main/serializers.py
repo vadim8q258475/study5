@@ -6,16 +6,7 @@ class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = "__all__"
-
-class ColorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Color
-        fields = "__all__"
-
-class SizeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Size
-        fields = "__all__"
+        
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,9 +16,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     type = TypeSerializer()
-    color = ColorSerializer()
-    brands = BrandSerializer(many=True)
-    sizes = SizeSerializer(many=True)
+    brand = BrandSerializer()
 
     class Meta:
         model = Product
