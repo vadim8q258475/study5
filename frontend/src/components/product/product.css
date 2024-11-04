@@ -32,22 +32,11 @@
 }
 .productTextStart{
     justify-content: start;
-    font-weight: bold;
 }
 .productTextEnd{
     justify-content: end;
 }
-.productsPageContainer{
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-}
-.productsSortFilter{
-    border: 2px solid black;
-    border-radius: 5px;
-    padding: 20px;
-    width: 80%;
-    height: fit-content;
-}
+
 .productTextList{
     display: flex;
     justify-content: space-between;

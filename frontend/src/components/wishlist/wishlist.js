@@ -41,6 +41,7 @@ function WishList() {
               key={prod.id}
               des={prod.des}
               qty={prod.qty}
+              id={prod.id}
             ></WishListProduct>
           ))}
         </div>

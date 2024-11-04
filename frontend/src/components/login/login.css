@@ -23,6 +23,7 @@
     font-size: 20px;
     padding-left: 15px;
     padding-right: 15px;
+    font-family: 'gotic';
 }
 .loginButtonWrapper{
     display: flex;

@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from main.models import Product
-from django.dispatch import receiver
-from django.db.models.signals import post_save, m2m_changed, pre_delete
-from .utils import recalc
+from main.models import *
 
 User = get_user_model()
 
@@ -39,7 +36,7 @@ class CartProduct(models.Model):
     qty = models.IntegerField(verbose_name='Количество')
 
     def __str__(self):
-        return f'Продукт корзины {self.product.name}'
+        return f'Продукт корзины {self.product.name} {self.product.qty}'
     
     class Meta:
         verbose_name = 'Продукт корзины'
@@ -115,64 +112,3 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
-
-
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created: 
-        cart = Cart.objects.create(user=instance)
-        cart.save()
-        wish_list = WishList.objects.create(user=instance)
-        wish_list.save()
-        Profile.objects.create(
-            user=instance, 
-            cart=cart, 
-            wish_list=wish_list
-        )
-        
-        
-@receiver(m2m_changed, sender=Cart.products.through)
-def cart_update_total(sender, instance, action, *args, **kwargs):
-    if action == 'post_add' or action == 'post_remove':
-        recalc(instance)
-        
-
-
-@receiver(post_save, sender=CartProduct)
-def create_profile(sender, instance, created, **kwargs):
-    cart = Cart.objects.filter(products__in=[instance])
-    if cart.exists():
-        cart = cart[0]
-        recalc(cart)
-        
-
-@receiver(post_save, sender=Order)
-def create_profile(sender, instance, created, **kwargs):
-    if instance.is_paid:
-        print("foo")
-        for order_product in instance.products.all():
-            product = order_product.product
-            product.qty -= order_product.qty
-            product.save()
-            cart_products = CartProduct.objects.filter(product=product)
-            if cart_products.exists():
-                for cart_product in cart_products: 
-                    if cart_product.qty > product.qty:
-                        cart_product.qty = product.qty
-                        cart_product.save()
-                    if cart_product.qty == 0:
-                        cart_product.delete()
-        
-            
-                
-@receiver(pre_delete, sender=CartProduct)
-def create_profile(sender, instance, **kwargs):
-    cart = Cart.objects.filter(products__in=[instance])
-    if cart.exists():
-        cart = cart[0]
-        cart_product_price = instance.product.price * instance.qty
-        cart.total -= cart_product_price
-        cart.save()
-                
-
-

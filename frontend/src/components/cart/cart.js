@@ -10,9 +10,8 @@ import utils from "../../utils.js";
 const cartArea = "cart";
 const deliveryTypeArea = "deliveryTypes";
 
-function createOrder(cart, deliveryTypes) {
+function createOrder(deliveryTypes) {
   return () => {
-
     let radios = document.getElementsByClassName("deliveryRadioInput");
 
     let delivery_type_id;
@@ -22,21 +21,20 @@ function createOrder(cart, deliveryTypes) {
         break;
       }
     }
-
     if (delivery_type_id) {
       let address = document.getElementById("addressInput").value;
       if (address.length == 0) {
         alert("Write your address");
       } else {
-        utils.sendData(
-          "accounts/orders",
-          "post",
-          {
+        utils
+          .sendData("accounts/orders", "post", {
             status_id: 1,
             delivery_type_id: delivery_type_id,
             address: address,
-          },
-        );
+          })
+          .then((res) => {
+            window.location.reload()
+          });
       }
     } else {
       alert("Choose delivery type");
@@ -54,7 +52,12 @@ function Cart() {
 
   useEffect(() => {
     utils.getData(trackPromise, SETTINGS.CART_URL, SETTINGS.TOKEN, setCart);
-    utils.getData(trackPromise, SETTINGS.DELIVERY_TYPES_URL, SETTINGS.TOKEN, setDeliveryTypes);
+    utils.getData(
+      trackPromise,
+      SETTINGS.DELIVERY_TYPES_URL,
+      SETTINGS.TOKEN,
+      setDeliveryTypes
+    );
     console.log(cart);
     console.log(deliveryTypes);
   }, [setCart]);
@@ -100,7 +103,7 @@ function Cart() {
             <div>
               <button
                 className="createOrderBtn btnStyle"
-                onClick={createOrder(cart, deliveryTypes)}
+                onClick={createOrder(deliveryTypes)}
               >
                 Create order
               </button>
@@ -115,6 +118,7 @@ function Cart() {
                 product={cartProduct.product}
                 cartProductId={cartProduct.id}
                 qty={cartProduct.qty}
+                setCart={setCart}
               ></CartProduct>
             ))}
           </div>

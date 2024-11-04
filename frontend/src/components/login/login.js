@@ -25,7 +25,13 @@ function postLoginInfo(setIsAuth) {
       .then((resp) => {
         localStorage.setItem("token", resp.data["auth_token"]);
         console.log(localStorage.getItem("token"));
-      }).then(() => {setIsAuth(true);})
+      })
+      .then(() => {
+        setIsAuth(true);
+      })
+      .then(() => {
+        
+      })
       .catch((err) => console.log(err));
   };
 }
@@ -58,7 +64,10 @@ function Login(props) {
             <div className="loginTitle">Password</div>
             <input className="loginInput" id="loginPasswordInput"></input>
             <div className="loginButtonWrapper">
-              <button className="loginButton btnStyle" onClick={postLoginInfo(setIsAuth)}>
+              <button
+                className="loginButton btnStyle"
+                onClick={postLoginInfo(setIsAuth)}
+              >
                 Sign In
               </button>
             </div>

@@ -18,6 +18,7 @@ from .models import *
 
 
 def preprocess_queryset(queryset, params: dict):
+    print(params)
     if settings.SORT_BY_KEY in params.keys():
         sort_by = params[settings.SORT_BY_KEY]
     else:
@@ -41,7 +42,7 @@ def preprocess_queryset(queryset, params: dict):
     else:
         brands = None
     if settings.TYPES_KEY in params.keys():
-        types = [int(i) for i in params[settings.TYPES_KEY].split()]
+        types = [Type.objects.get(id=int(i))  for i in params[settings.TYPES_KEY].split()]
     else:
         types = None
 

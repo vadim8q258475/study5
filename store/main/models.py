@@ -33,6 +33,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, 
                                 default=0, verbose_name='Цена', blank=True, null=True)
     qty = models.IntegerField(default=0, verbose_name="Количество в наличии")
+    # добавить слаг и imgfield
 
     def __str__(self):
         return f'{self.name}'

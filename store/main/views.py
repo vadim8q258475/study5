@@ -65,3 +65,12 @@ class GenDelDefaultModelsAPIView(APIView):
     def delete(self, request):
         delete_all_models(Product.objects.all())
         return Response("success")
+    
+    
+class MinMaxProductsPriceAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        products = Product.objects.all()
+        mx = max(products, key=lambda x: x.price).price
+        mn = min(products, key=lambda x: x.price).price
+        return Response({"min": mn, 'max': mx, "current_min": mn, "current_max": mx})

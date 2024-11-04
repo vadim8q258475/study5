@@ -1,10 +1,11 @@
-/* @font-face {
+@font-face {
   font-family: "gotic";
   src: url("CeltesSP 2.otf");
-} */
+}
 
 .App {
-  /* font-family: 'gotic'; */
+  font-family: 'gotic';
+  font-weight: lighter;
 }
 
 .pageTitle {
@@ -19,11 +20,12 @@ a {
 }
 
 .btnStyle {
+  font-family: "gotic";
   border-radius: 10px;
   border: 2px solid rgb(0, 0, 0);
   background-color: white;
   font-size: 20px;
-  transition: all 200ms linear;
+  transition: all 100ms linear;
 }
 
 .btnStyle:hover{
@@ -40,7 +42,7 @@ a {
 
 .textHover{
   cursor: pointer;
-  transition: all 200ms linear;
+  transition: all 100ms linear;
 }
 
 .textHover:hover{

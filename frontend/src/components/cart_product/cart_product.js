@@ -3,14 +3,16 @@ import Product from "../product/product";
 import "./cart_product.css";
 import utils from "../../utils";
 
-const baseApiUrl = "http://127.0.0.1:8000";
-const token = localStorage.getItem("token");
 
 function removeFromCart(cartProductId, qty) {
   return () => {
-    utils.sendData("accounts/cart", "delete", {
-      data: { cart_product_id: cartProductId, qty: qty },
-    });
+    utils
+      .sendData("accounts/cart", "delete", {
+        data: { cart_product_id: cartProductId, qty: qty },
+      })
+      .then((res) => {
+        window.location.reload();
+      });
   };
 }
 
@@ -19,17 +21,25 @@ function changeQty(cartProductId, product, is_plus) {
     let product_qty = 1;
 
     if (is_plus) {
-      utils.sendData("accounts/cart", "patch", {
-        product_id: product.id,
-        product_qty: product_qty,
-      });
+      utils
+        .sendData("accounts/cart", "patch", {
+          product_id: product.id,
+          product_qty: product_qty,
+        })
+        .then((res) => {
+          window.location.reload();
+        });
     } else {
-      utils.sendData("accounts/cart", "delete", {
-        data: {
-          cart_product_id: cartProductId,
-          qty: product_qty,
-        },
-      });
+      utils
+        .sendData("accounts/cart", "delete", {
+          data: {
+            cart_product_id: cartProductId,
+            qty: product_qty,
+          },
+        })
+        .then((res) => {
+          window.location.reload();
+        });
     }
   };
 }
@@ -49,28 +59,28 @@ function CartProduct(props) {
       <div className="cartProductInterface">
         <div className="qty">
           <button
+            type="submit"
             className="qtyBtn btnStyle"
             onClick={changeQty(
               props.cartProductId,
               props.product,
-              false
+              false,
+              props.setCart
             )}
           >
             -
           </button>
           <div className="qtyInputWrapper">{props.qty}</div>
           <button
+            type="submit"
             className="qtyBtn btnStyle"
-            onClick={changeQty(
-              props.cartProductId,
-              props.product,
-              true
-            )}
+            onClick={changeQty(props.cartProductId, props.product, true)}
           >
             +
           </button>
         </div>
         <button
+          type="submit"
           className="deleteProductBtn btnStyle"
           onClick={removeFromCart(props.cartProductId, props.qty)}
         >

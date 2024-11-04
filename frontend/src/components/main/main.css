@@ -1,3 +1,23 @@
 .main{
-    
+    position: relative;
+}
+.triangle{
+    position: absolute;
+    top: 50px;
+    z-index: -1;
+}
+#pos1{
+    right: 0px;
+    transform: rotate(90deg);
+}
+.pos2{
+
+}
+.triangleContainer{
+    position: absolute;
+    top: 50px;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
