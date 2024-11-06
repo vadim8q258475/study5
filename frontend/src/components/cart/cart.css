@@ -93,3 +93,12 @@ textarea{
     border-radius: 10px;
     font-family: 'gotic';
 }
+
+.createOrderContainer{
+    display: unset;
+    position: relative;
+}
+.createOrder{
+    position: sticky;
+    top: 80px;
+}

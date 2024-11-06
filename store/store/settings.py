@@ -1,5 +1,5 @@
 from pathlib import Path
-# from django.contrib.auth import get_user_model
+import os 
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,9 +20,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'corsheaders',
+    'debug_toolbar',
     'main',
     'accounts',
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -33,9 +34,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    'corsheaders.middleware.CorsMiddleware', 
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -53,12 +53,12 @@ REST_FRAMEWORK = {
     ]
 }
 
-# User = get_user_model()
-
-# DJOSER = {
-#     'SEND_ACTIVATION_EMAIL': True,
-#     'LOGIN_FIELD': User.EMAIL_FIELD,
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
 
 TEMPLATES = [
     {
@@ -78,14 +78,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -102,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -111,29 +108,29 @@ USE_I18N = True
 
 USE_TZ = True
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+
 STATIC_URL = 'static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, MEDIA_URL, STATIC_URL),)
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-DEFAULT_BRANDS = ['Nike', 'Amiri', 'Balenciaga', 'Adidas', 'Rick Owens', 'Bape']
-DEFAULT_TYPES = ['Hoodie', 'T-shirt', 'Jeans', 'Jacket', 'Pants']
+DEFAULT_BRANDS = ['Tiffany', 'Amiri', 'Balenci', 'Cartier', 'Rick', 'Prada']
+DEFAULT_TYPES = ['Bracelet', 'Keychain', 'Ring', 'Earring'] 
 DEFAULT_PRICE_START = 10
 DEFAULT_PRICE_END = 10000
 DEFAULT_QTY_START = 1
 DEFAULT_QTY_END = 1000
-
-
 ACCEPTABLE_SORT_FIELDS = ['price', 'name', '-price', '-name']
-
 REVERSE_TRUE_VALUE = 'True'
 REVERSE_FALSE_VALUE = 'False'
-
 SORT_BY_KEY = 'sort_by'
 REVERSE_KEY = 'reverse'
 PRICE_START_KEY = 'price_start'
 PRICE_END_KEY = 'price_end'
 BRANDS_KEY = 'brands'
 TYPES_KEY = 'types'
-
 LOREM = "Est minim adipisicing ex dolor et duis aliquip laborum incididunt eiusmod commodo esse ut laborum. Occaecat dolor fugiat magna proident et eiusmod cillum excepteur sunt et sint in et esse. Ea mollit aliqua ullamco voluptate non. Aute reprehenderit ad veniam est aliquip esse aliquip exercitation. Incididunt aute ad reprehenderit ullamco dolor ut ullamco."

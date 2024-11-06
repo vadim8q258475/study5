@@ -34,14 +34,9 @@ function WishList() {
         <div className="wishContainer">
           {wishList.products.map((prod) => (
             <WishListProduct
-              name={prod.name}
-              price={prod.price}
-              type={prod.type}
-              brand={prod.brand}
+              product={prod}
               key={prod.id}
-              des={prod.des}
-              qty={prod.qty}
-              id={prod.id}
+              img={prod.img}
             ></WishListProduct>
           ))}
         </div>

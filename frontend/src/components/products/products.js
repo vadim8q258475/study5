@@ -23,7 +23,20 @@ function priceRangeChange(setPriceRange, priceRange) {
   };
 }
 
-function applyFilterChanges(types, brands, setProducts) {
+function changePage(pageInfo, setPageInfo, pageNum, setPageNum, changeType) {
+  return () => {
+    if (pageInfo[changeType]) {
+      utils.sendData("", "get", {}, "", setPageInfo, pageInfo[changeType])
+      if(changeType == "next"){
+        setPageNum(pageNum+1)
+      }else{
+        setPageNum(pageNum-1)
+      }
+    }
+  };
+}
+
+function applyFilterChanges(types, brands, setPageInfo, setPageNum) {
   return () => {
     let sortByInputs = document.getElementsByClassName("sortByRadio");
     let colorInputs = document.getElementsByClassName("typeCheckBox");
@@ -57,11 +70,15 @@ function applyFilterChanges(types, brands, setProducts) {
           reverse: "True",
         });
       } else {
-        params += utils.makeQueryStrFromStrings({sort_by: SETTINGS.SORT_TYPES[sortId].name});
+        params += utils.makeQueryStrFromStrings({
+          sort_by: SETTINGS.SORT_TYPES[sortId].name,
+        });
       }
     }
 
-    utils.sendData("products", "get", {}, params, setProducts);
+    utils.sendData("products", "get", {}, params, setPageInfo).then(
+      () => {setPageNum(1)}
+    )
   };
 }
 
@@ -75,20 +92,25 @@ function resetFilters() {
   utils.resetCheckBoxes(brandInputs);
 }
 
-const productsArea = "products";
+const pageInfoArea = "pageInfo";
 const brandsArea = "brands";
 const typesArea = "types";
 const priceRangeArea = "priceRange";
 
 function Products() {
-  const { productsPromiseInProgress } = usePromiseTracker({ productsArea });
-  const [products, setProducts] = useState([]);
-
   const { brandsPromiseInProgress } = usePromiseTracker({ brandsArea });
   const [brands, setBrands] = useState([]);
 
   const { typesPromiseInProgress } = usePromiseTracker({ typesArea });
   const [types, setTypes] = useState([]);
+
+  const { pageInfoPromiseInProgress } = usePromiseTracker({ pageInfoArea });
+  const [pageInfo, setPageInfo] = useState({
+    results: [],
+    next: null,
+    previous: null,
+    count: 0,
+  });
 
   const { priceRangePromiseInProgress } = usePromiseTracker({ priceRangeArea });
   const [priceRange, setPriceRange] = useState({
@@ -98,13 +120,16 @@ function Products() {
     current_max: 0,
   });
 
+  const [pageNum, setPageNum] = useState(1);
+
   useEffect(() => {
     utils.getData(
       trackPromise,
       SETTINGS.PRODUCTS_URL,
       SETTINGS.TOKEN,
-      setProducts
+      setPageInfo
     );
+
     utils.getData(trackPromise, SETTINGS.BRANDS_URL, SETTINGS.TOKEN, setBrands);
     utils.getData(trackPromise, SETTINGS.TYPES_URL, SETTINGS.TOKEN, setTypes);
     utils.getData(
@@ -113,17 +138,17 @@ function Products() {
       SETTINGS.TOKEN,
       setPriceRange
     );
-  }, [setProducts, setBrands, setTypes, setPriceRange]);
+    setPageNum(1)
+  }, [setBrands, setTypes, setPriceRange, setPageInfo, setPageNum]);
 
   if (
-    productsPromiseInProgress ||
+    pageInfoPromiseInProgress ||
     brandsPromiseInProgress ||
     typesPromiseInProgress ||
     priceRangePromiseInProgress
   ) {
     return <div>Подождите, данные загружаются!</div>;
   } else {
-    console.log(priceRange);
     return (
       <div className="products">
         <div className="pageTitle">PRODUCTS</div>
@@ -171,7 +196,7 @@ function Products() {
               <div className="filterTitle">Brands</div>
               <form>
                 {brands.map((brand) => (
-                  <div className="choiceElement">
+                  <div className="choiceElement" key={brand.id}>
                     <input
                       type="checkbox"
                       name="brandCheckBox"
@@ -187,7 +212,7 @@ function Products() {
               <div className="filterTitle">Types</div>
               <form>
                 {types.map((type) => (
-                  <div className="choiceElement">
+                  <div className="choiceElement" key={type.id}>
                     <input
                       type="checkbox"
                       name="typeCheckBox"
@@ -205,8 +230,8 @@ function Products() {
                 <input
                   className="rangePrice"
                   value={priceRange.current_min}
+                  readOnly={true}
                 ></input>
-                {/* <input type="range" className="rangeInput"></input> */}
                 <div className="rangeInputContainer">
                   <RangeSlider
                     rangeSlideDisabled={true}
@@ -220,6 +245,7 @@ function Products() {
                 <input
                   className="rangePrice"
                   value={priceRange.current_max}
+                  readOnly={true}
                 ></input>
               </div>
             </div>
@@ -227,7 +253,7 @@ function Products() {
               <div className="addFiltersBtnContainer">
                 <button
                   className="addFiltersBtn btnStyle"
-                  onClick={applyFilterChanges(types, brands, setProducts)}
+                  onClick={applyFilterChanges(types, brands, setPageInfo, setPageNum)}
                 >
                   Apply Changes
                 </button>
@@ -244,20 +270,33 @@ function Products() {
           </div>
           <div className="productsContainerWrapper">
             <div className="productsContainer">
-              {products.map((prod) => (
-                <Link to={`products/${prod.id}`}>
+              {pageInfo.results.map((prod) => (
+                <Link to={`products/${prod.slug}`} className="productLink" key={prod.id}>
                   <Product
-                    name={prod.name}
-                    price={prod.price}
-                    type={prod.type}
-                    brand={prod.brand}
-                    key={prod.id}
-                    des={prod.des}
-                    qty={prod.qty}
+                    product={prod}
+                    key={prod.id} 
+                    img={prod.img}
                   ></Product>
                 </Link>
               ))}
             </div>
+          </div>
+        </div>
+        <div className="paginationMenuWrapper">
+          <div className="paginationMenu">
+            <button
+              className="paginationBtn btnStyle"
+              onClick={changePage(pageInfo, setPageInfo, pageNum, setPageNum, "previous")}
+            >
+              {"<"}
+            </button>
+            <div className="currentPageNumber">{pageNum}</div>
+            <button
+              className="paginationBtn btnStyle"
+              onClick={changePage(pageInfo, setPageInfo, pageNum, setPageNum, "next")}
+            >
+              {">"}
+            </button>
           </div>
         </div>
       </div>

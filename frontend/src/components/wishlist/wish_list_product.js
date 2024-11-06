@@ -1,6 +1,7 @@
 import "./wish_list_product.css";
 import Product from "../product/product.js";
 import utils from "../../utils.js";
+import SETTINGS from "../../settings.js";
 
 function removeFromWishList(productId) {
   return () => {
@@ -21,13 +22,8 @@ function WishListProduct(props) {
         D
       </button>
       <Product
-        name={props.name}
-        price={props.price}
-        type={props.type}
-        brand={props.brand}
-        key={props.id}
-        des={props.des}
-        qty={props.qty}
+        product={props.product}
+        img={`${SETTINGS.BASE_URL}/${props.product.img}`}
       ></Product>
     </div>
   );

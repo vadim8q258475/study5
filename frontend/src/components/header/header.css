@@ -7,6 +7,7 @@
     padding-left: 160px;
     padding-right: 160px;
     border-bottom: 2px solid black;
+
     @media (max-width: 1350px) {
         padding-left: 100px;
         padding-right: 100px;
@@ -18,7 +19,7 @@
     @media (max-width: 1000px) {
         padding-left: 40px;
         padding-right: 40px;
-    }
+    };
 }
 
 .logoContainer{

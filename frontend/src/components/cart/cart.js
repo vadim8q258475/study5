@@ -33,7 +33,7 @@ function createOrder(deliveryTypes) {
             address: address,
           })
           .then((res) => {
-            window.location.reload()
+            window.location.reload();
           });
       }
     } else {
@@ -71,42 +71,44 @@ function Cart() {
       <div className="cart">
         <div className="pageTitle">CART</div>
         <div className="cartContainer">
-          <div className="createOrder">
-            <div className="cartContentTitle">Create order</div>
-            <div className="cartText">
-              <div className="cartTitle">Total:</div> {cart.total} $
-            </div>
-            <div className="cartText">
-              <div className="cartTitle">Qty:</div> 23
-            </div>
-            <div className="cartText">
-              <div className="cartTitle">Address:</div> <br></br>
-              <textarea id="addressInput"></textarea>
-            </div>
-            <div className="deliveryTypes">
+          <div className="createOrderContainer">
+            <div className="createOrder">
+              <div className="cartContentTitle">Create order</div>
               <div className="cartText">
-                <div className="cartTitle">DeliveryType: </div>
+                <div className="cartTitle">Total:</div> {cart.total} $
               </div>
-              <form>
-                {deliveryTypes.map((deliveryType) => (
-                  <div className="deliveryType">
-                    <input
-                      type="radio"
-                      name="deliveryType"
-                      className="deliveryRadioInput"
-                    />
-                    {deliveryType.name}
-                  </div>
-                ))}
-              </form>
-            </div>
-            <div>
-              <button
-                className="createOrderBtn btnStyle"
-                onClick={createOrder(deliveryTypes)}
-              >
-                Create order
-              </button>
+              <div className="cartText">
+                <div className="cartTitle">Qty:</div> 23
+              </div>
+              <div className="cartText">
+                <div className="cartTitle">Address:</div> <br></br>
+                <textarea id="addressInput"></textarea>
+              </div>
+              <div className="deliveryTypes">
+                <div className="cartText">
+                  <div className="cartTitle">DeliveryType: </div>
+                </div>
+                <form>
+                  {deliveryTypes.map((deliveryType) => (
+                    <div className="deliveryType">
+                      <input
+                        type="radio"
+                        name="deliveryType"
+                        className="deliveryRadioInput"
+                      />
+                      {deliveryType.name}
+                    </div>
+                  ))}
+                </form>
+              </div>
+              <div>
+                <button
+                  className="createOrderBtn btnStyle"
+                  onClick={createOrder(deliveryTypes)}
+                >
+                  Create order
+                </button>
+              </div>
             </div>
           </div>
 
@@ -122,6 +124,8 @@ function Cart() {
               ></CartProduct>
             ))}
           </div>
+
+          
         </div>
       </div>
     );

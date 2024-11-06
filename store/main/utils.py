@@ -3,22 +3,7 @@ from django.conf import settings
 from .models import *
 
 
-
-"""
-сортировка по значению sort_by=<field_name> reverse=<True/False>
-фильтрация по цветам colors=<c1>+<c2>
-           по цене price_start=<value> price_end=<value>   
-           по размерам sizes=<s1>+<s2>
-           по брендам brands=<b1>+<b2>
-           по типам types=<t1>+<t2>
-
-
-НУЖНО ПОКРЫТЬ ВСЕ ЭТО ТЕСТАМИ
-"""
-
-
 def preprocess_queryset(queryset, params: dict):
-    print(params)
     if settings.SORT_BY_KEY in params.keys():
         sort_by = params[settings.SORT_BY_KEY]
     else:
@@ -89,21 +74,23 @@ def generate_simple_models(model, names):
     return queryset
 
 
-def generate_random_products(num_models, brands, types):
+def generate_random_products(num, brands, types):
     queryset = []
-    for i in range(num_models):
-        kwargs = {
-            'name': f'name{i}',
-            'des':  settings.LOREM,
-            'type': rd.choice(types),
-            'brand': rd.choice(brands),
-            'price': rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END),
-            'qty': rd.randint(settings.DEFAULT_QTY_START, settings.DEFAULT_QTY_END)
-        }
-        product = Product.objects.create(**kwargs)
-       
-        product.save()
-        queryset.append(product)
+    for _ in range(num):
+        for i, type in enumerate(types):
+            for j in range(1, 6):
+                kwargs = {
+                    'name': f'name_{i}{j}',
+                    'des':  settings.LOREM,
+                    'type': type,
+                    'brand': rd.choice(brands),
+                    'price': rd.randint(settings.DEFAULT_PRICE_START, settings.DEFAULT_PRICE_END),
+                    'qty': rd.randint(settings.DEFAULT_QTY_START, settings.DEFAULT_QTY_END)
+                }
+                product = Product.objects.create(**kwargs)
+                product.img = f"static/images/{type.name}/img_{j}.jpg"
+                product.save()
+                queryset.append(product)
     return queryset
 
 

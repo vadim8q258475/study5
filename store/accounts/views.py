@@ -6,11 +6,6 @@ from .models import *
 from .serializers import *
 from .utils import *
 
-"""
-    Дописать функционал создания заказа
-    Покрыть все тестами
-    Добавить перещет корзины
-"""
 
 
 class TestAccountsAPIView(APIView):
@@ -36,7 +31,6 @@ class CartAPIView(APIView):
         
         product = Product.objects.filter(id=id)
         
-        # проверяем существует ли продукт 
         if product.exists():
             product = product[0]
         else:
@@ -77,7 +71,6 @@ class CartAPIView(APIView):
             return Response("В корзине пользователя не существует продукта с таким id")
         
         if qty >= cart_product.qty:
-            # cart.products.remove(cart_product)
             cart_product.delete()
         else:
             cart_product.qty -= qty
@@ -160,7 +153,6 @@ class OrdersAPIView(APIView):
             total += cart_product.product.price * cart_product.qty
             order_product.save()
             cart_product.delete()
-            # добавить изменение количества товаров в таблице при оплате заказа
             order.products.add(order_product)
             
         total += delivery_type.price

@@ -93,6 +93,8 @@
     
     width: 80%;
     height: fit-content;
+    position: sticky;
+    top: 80px
 }
 
 .rangeInputContainer{
@@ -101,6 +103,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.paginationMenuWrapper{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.paginationMenu{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.paginationBtn{
+   
+}
+.currentPageNumber{
+    padding: 10px;
+    font-size: 25px;
+}
+.paginationBtn:hover{
+    border:2px solid black;
+    font-weight: 100;
 }
 
 

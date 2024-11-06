@@ -1,24 +1,22 @@
 import "./product.css"
-import tShirt from './t-shirt.jpeg';
-
 
 function Product(props) {
     return (
       <div className="productWrapper">
-      <div className="qtyBox">{props.qty}</div>
-      <div className="product" key={props.key}>
+      <div className="qtyBox">{props.product.qty}</div>
+      <div className="product">
         <div className="imgWrapper">
-        <img className="productImg" src={tShirt}></img>
+        <img className="productImg" src={props.img}></img>
                 </div>
                 <div className="productInfo">
                     <div className="productTextContainer">
-                      <div className="productText productTextStart">{props.name}</div>
-                      <div className="productText productTextStart">{Number(props.price)} $</div>
+                      <div className="productText productTextStart">{props.product.name}</div>
+                      <div className="productText productTextStart">{Number(props.product.price)} $</div>
                       
                     </div>
                     <div className="productTextContainer">
-                      <div className="productText productTextEnd">{props.type.name}</div>
-                      <div className="productText productTextEnd"><div className="overflowText">{props.brand.name}</div></div>
+                      <div className="productText productTextEnd">{props.product.type.name}</div>
+                      <div className="productText productTextEnd"><div className="overflowText">{props.product.brand.name}</div></div>
                     </div>
                 </div>
       </div>

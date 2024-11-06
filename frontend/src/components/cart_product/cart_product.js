@@ -2,6 +2,7 @@ import axios from "axios";
 import Product from "../product/product";
 import "./cart_product.css";
 import utils from "../../utils";
+import SETTINGS from "../../settings";
 
 
 function removeFromCart(cartProductId, qty) {
@@ -49,12 +50,8 @@ function CartProduct(props) {
   return (
     <div className="cartProduct">
       <Product
-        name={props.product.name}
-        price={props.product.price}
-        type={props.product.type}
-        qty={props.product.qty}
-        brand={props.product.brand}
-        key={props.product.id}
+        product={props.product}
+        img={`${SETTINGS.BASE_URL}/${props.product.img}`}
       ></Product>
       <div className="cartProductInterface">
         <div className="qty">

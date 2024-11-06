@@ -1,8 +1,9 @@
 import axios from "axios";
 import SETTINGS from "./settings";
 
+
 // функции для взаимодействия с сервером
-function getData(trackPromise, apiUrl, token, setFn) {
+async function getData(trackPromise, apiUrl, token, setFn) {
   const instance = axios.create({
     baseURL: apiUrl,
     headers: { Authorization: `Token ${token}` },
@@ -12,15 +13,14 @@ function getData(trackPromise, apiUrl, token, setFn) {
     instance.get().then((resp) => {
       const data = resp.data;
       setFn(data);
-      console.log(data);
     })
   );
 }
 
-async function sendData(url, method, data, params = "", setFn = null) {
+async function sendData(url, method, data, params = "", setFn = null, baseUrl=SETTINGS.BASE_URL) {
   console.log(params);
   const instance = axios.create({
-    baseURL: SETTINGS.BASE_URL,
+    baseURL: baseUrl,
     headers: { Authorization: `Token ${SETTINGS.TOKEN}` },
     data: data,
   });
@@ -40,7 +40,8 @@ async function sendData(url, method, data, params = "", setFn = null) {
   return null;
 }
 
-// функции для преобразования данных в квери параметры
+
+// функции для преобразования данных в квери параметры 
 function makeQueryParamList(arr) {
   let st = "";
   let el;
@@ -103,7 +104,7 @@ const utils = {
   makeQueryStrFromArrs: makeQueryStrFromArrs,
   makeQueryStrFromStrings: makeQueryStrFromStrings,
   getChecked: getChecked,
-  resetCheckBoxes: resetCheckBoxes,
+  resetCheckBoxes: resetCheckBoxes
 };
 
 export default utils;

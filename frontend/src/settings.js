@@ -3,7 +3,7 @@ const BASE_URL = "http://127.0.0.1:8000";
 const PRODUCTS_URL = `${BASE_URL}/products`;
 const TYPES_URL = `${BASE_URL}/types`;
 const BRANDS_URL = `${BASE_URL}/brands`;
-const PRODUCT_IDS_URL = `${BASE_URL}/product_ids`;
+const PRODUCT_IDS_URL = `${BASE_URL}/product_slugs`;
 const MIN_MAX_URL = `${BASE_URL}/min_max`;
 
 const ACCOUNTS_URL = `${BASE_URL}/accounts`;

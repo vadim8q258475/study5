@@ -1,5 +1,6 @@
 import "./order.css";
 import Product from "../product/product.js";
+import SETTINGS from "../../settings.js";
 
 function Order(props) {
   return (
@@ -26,12 +27,9 @@ function Order(props) {
         <div className="orderProducts">
           {props.order_products.map((order_prod) => (
             <Product
-            name={order_prod.product.name}
-            price={order_prod.product.price}
-            type={order_prod.product.type}
-            qty={order_prod.product.qty}
-            brand={order_prod.product.brand}
-            key={order_prod.product.id}
+              product={order_prod.product}
+              img={`${SETTINGS.BASE_URL}/${order_prod.product.img}`}
+              key={order_prod.id}
             ></Product>
           ))}
         </div>

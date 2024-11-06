@@ -1,5 +1,6 @@
 .wishListProduct{
     position: relative;
+    transition: all 250ms linear;
 }
 .like{
     position: absolute;
@@ -12,3 +13,11 @@
     align-items: center;
     z-index: 1;
 }
+
+.wishListProduct:hover .like{
+    transform: scale(1.1);
+}
+.wishList:active .like{
+    transform: scale(0.90);
+}
+
