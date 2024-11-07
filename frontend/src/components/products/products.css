@@ -1,0 +1,129 @@
+
+
+
+
+.products{
+    padding-left: 150px;
+    padding-right: 150px;
+    @media (max-width: 1350px) {
+        padding-left: 100px;
+        padding-right: 100px;
+    };
+    @media (max-width: 1100px) {
+        padding-left: 60px;
+        padding-right: 60px;
+    };
+    @media (max-width: 1000px) {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+.productsContainer{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    @media (max-width: 1350px) {
+        grid-template-columns: repeat(2, 1fr); 
+    };
+    @media (max-width: 1000px) {
+        grid-template-columns: repeat(1, 1fr); 
+    }
+}
+.productsPageContainer{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+.filterTitle{
+    font-size: 25px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid black;
+    padding: 4px;
+    width: 40%;
+}
+.filter{
+    margin-bottom: 20px;
+}
+.choiceElement{
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+.radioElement{
+    font-size: 20px;
+}
+.rangePrice{
+    font-size: 20px;
+    display: inline-block;
+    width: 60px;
+    border-radius: 5px;
+    font-family: 'gotic';
+}
+.rangeInput{
+    width: 100%;
+    min-width: 100px
+}
+.priceSlider{
+
+}
+.addFiltersBtnGroup{
+    border-top: 2px solid black;
+}
+.addFiltersBtnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.addFiltersBtn{
+    width: 70%;
+    height: 40px;
+    font-family: 'gotic';
+}
+.rangePriceWrapper{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+
+.productsSortFilter{
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    
+    width: 80%;
+    height: fit-content;
+    position: sticky;
+    top: 80px
+}
+
+.rangeInputContainer{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.paginationMenuWrapper{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.paginationMenu{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.paginationBtn{
+   
+}
+.currentPageNumber{
+    padding: 10px;
+    font-size: 25px;
+}
+.paginationBtn:hover{
+    border:2px solid black;
+    font-weight: 100;
+}
+
+
