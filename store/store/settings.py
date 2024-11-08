@@ -1,10 +1,13 @@
 from pathlib import Path
 import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-pmtt$j7m1svp2moxitkzx9q8$4a@^&_tr83t8!scg#3dq8l5!p'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
@@ -56,7 +59,7 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": os.getenv("CACHE_LOCATION"),
     }
 }
 
@@ -80,8 +83,12 @@ WSGI_APPLICATION = 'store.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_USER_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -128,7 +135,6 @@ ACCEPTABLE_SORT_FIELDS = ['price', 'name', '-price', '-name']
 REVERSE_TRUE_VALUE = 'True'
 REVERSE_FALSE_VALUE = 'False'
 SORT_BY_KEY = 'sort_by'
-REVERSE_KEY = 'reverse'
 PRICE_START_KEY = 'price_start'
 PRICE_END_KEY = 'price_end'
 BRANDS_KEY = 'brands'

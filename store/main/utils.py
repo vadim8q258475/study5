@@ -2,16 +2,21 @@ import random as rd
 from django.conf import settings
 from .models import *
 
+def make_cache_key(prefix, params):
+    s = f'{prefix}_'
+    for k, v in params.items():
+        if ' ' in v:
+            s += f'{k}={'+'.join(v.split(' '))}&'
+        else:
+            s += f'{k}={v}&'
+    return s[:len(s) - 1]
+
 
 def preprocess_queryset(queryset, params: dict):
     if settings.SORT_BY_KEY in params.keys():
         sort_by = params[settings.SORT_BY_KEY]
     else:
         sort_by = None
-    if settings.REVERSE_KEY in params.keys():
-        reverse = params[settings.REVERSE_KEY]
-    else:
-        reverse = None
 
     if settings.PRICE_START_KEY in params.keys():
         price_start = int(params[settings.PRICE_START_KEY])
@@ -31,15 +36,13 @@ def preprocess_queryset(queryset, params: dict):
     else:
         types = None
 
-    queryset = sort_queryset(queryset, sort_by, reverse=reverse)
+    queryset = sort_queryset(queryset, sort_by)
     queryset = filter_queryset(queryset,
                                price_start, price_end,
                                brands, types)
     return queryset
 
-def sort_queryset(queryset, field_name, reverse=settings.REVERSE_FALSE_VALUE):
-    if reverse == settings.REVERSE_TRUE_VALUE:
-        field_name = f'-{field_name}'
+def sort_queryset(queryset, field_name):
     if field_name in settings.ACCEPTABLE_SORT_FIELDS:
         queryset = queryset.order_by(field_name)
     return queryset

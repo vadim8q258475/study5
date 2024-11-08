@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
 from django.core.cache import cache
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class TestAPIView(APIView):
@@ -47,15 +48,14 @@ class ProductsListAPIView(generics.ListAPIView):
     serializer_class = ProductSerializer
     pagination_class = ProductAPIListPagination
 
-    def get_queryset(self, *args, **kwargs):
-        params = self.request.GET.dict()
-        return preprocess_queryset(super().get_queryset(*args, **kwargs), params)
-    
     def list(self, request, *args, **kwargs):    
-        cache_key = "products"
+        params = request.GET.dict()
+        cache_key = make_cache_key('products', params)
+        cache_time = 30
+        
         if not cache.get(cache_key):
-            queryset = self.filter_queryset(self.get_queryset())
-            cache.set(cache_key, queryset, 60)
+            queryset = preprocess_queryset(self.get_queryset(), params)
+            cache.set(cache_key, queryset, cache_time)
         else:
             queryset = cache.get(cache_key)
 
@@ -76,9 +76,11 @@ class BrandsAPIView(ListAPIView):
     
     def list(self, request, *args, **kwargs):    
         cache_key = "brands"
+        cache_time = 30
+        
         if not cache.get(cache_key):
             queryset = self.filter_queryset(self.get_queryset())
-            cache.set(cache_key, queryset, 60)
+            cache.set(cache_key, queryset, cache_time)
         else:
             queryset = cache.get(cache_key)
 
@@ -100,9 +102,11 @@ class TypesAPIView(ListAPIView):
     
     def list(self, request, *args, **kwargs):    
         cache_key = "types"
+        cache_time = 30
+        
         if not cache.get(cache_key):
             queryset = self.filter_queryset(self.get_queryset())
-            cache.set(cache_key, queryset, 60)
+            cache.set(cache_key, queryset, cache_time)
         else:
             queryset = cache.get(cache_key)
 
